@@ -116,7 +116,7 @@ public class CMinusParser implements Parser {
         }
     }
 
-    private FunDecl parseFunDeclP(TokenType declType, Object id) {
+    private FunDecl parseFunDeclP(TokenType declType, String id) {
         matchToken(TokenType.LPAREN);
         ParamList params = parseParams();
         matchToken(TokenType.RPAREN);

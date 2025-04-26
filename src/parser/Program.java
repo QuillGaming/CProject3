@@ -41,7 +41,9 @@ public class Program {
 
                 HashMap symbolTable = currFuncItem.getTable();
                 for (VarDecl varDecl : ((FunDecl) declaration).getCmpndStmt().getDecls().getList()) {
-                    symbolTable.put(currFuncItem.getNewRegNum(), varDecl.getID()); // Does not handle arrays
+                    // Put the virtual register number and the variable name in the symbol table.
+                    // May not be fully correct, but it's a start
+                    symbolTable.put(currFuncItem.getNewRegNum(), varDecl.getID());
                 }
 
                 for (Statement stmt : ((FunDecl) declaration).getCmpndStmt().getStmts().getList()) {

@@ -5,6 +5,7 @@ import parser.ASTNodes.*;
 import scanner.TokenType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static lowlevel.Data.*;
 
@@ -36,9 +37,11 @@ public class Program {
                     FuncParam firstParam = getFuncParams(((FunDecl) declaration).getParams().getList());
                     currItem = new Function(declType, declaration.getID(), firstParam);
                 }
+                Function currFuncItem = (Function) currItem;
 
+                HashMap symbolTable = currFuncItem.getTable();
                 for (VarDecl varDecl : ((FunDecl) declaration).getCmpndStmt().getDecls().getList()) {
-
+                    symbolTable.put(currFuncItem.getNewRegNum(), varDecl.getID()); // Does not handle arrays
                 }
 
                 for (Statement stmt : ((FunDecl) declaration).getCmpndStmt().getStmts().getList()) {

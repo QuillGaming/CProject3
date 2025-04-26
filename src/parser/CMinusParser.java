@@ -170,14 +170,21 @@ public class CMinusParser implements Parser {
     private VarDecl parseVarDecl() {
         matchToken(TokenType.INT);
         Token id = matchToken(TokenType.ID);
-        Token num = new Token(TokenType.VOID, "");
+        Token numToken = null;
+        int num = 0;
         if (currentToken.getType() == TokenType.LBRACK) {
             matchToken(TokenType.LBRACK);
-            num = matchToken(TokenType.NUM);
+            numToken = matchToken(TokenType.NUM);
+            num = Integer.parseInt(numToken.getTokenData());
             matchToken(TokenType.RBRACK);
         }
         matchToken(TokenType.SEMI);
-        return new VarDecl(TokenType.INT, id.getTokenData(), num.getTokenData());
+        if (numToken == null) {
+            return new VarDecl(TokenType.INT, id.getTokenData());
+        }
+        else {
+            return new VarDecl(TokenType.INT, id.getTokenData(), true, num);
+        }
     }
 
     private StmtList parseStmts() {

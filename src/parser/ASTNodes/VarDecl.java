@@ -4,16 +4,18 @@ import scanner.TokenType;
 
 public class VarDecl {
     private final TokenType type;
-    private final Object ID;
-    private final Object num;
+    private final String ID;
+    private final boolean array;
+    private final int num;
 
-    public VarDecl(TokenType t, Object i) {
-        this(t, i, null);
+    public VarDecl(TokenType t, String i) {
+        this(t, i, false, 0);
     }
 
-    public VarDecl(TokenType t, Object i, Object n) {
+    public VarDecl(TokenType t, String i, boolean a, int n) {
         type = t;
         ID = i;
+        array = a;
         num = n;
     }
 
@@ -21,8 +23,12 @@ public class VarDecl {
         return type;
     }
 
-    public Object getID() {
+    public String getID() {
         return ID;
+    }
+
+    public boolean isArray() {
+        return array;
     }
 
     public Object getNum() {

@@ -17,26 +17,32 @@ public class Program {
 
     public CodeItem genLLCode() {
         CodeItem firstItem = null;
-        CodeItem currItem = null;
+        CodeItem currItem;
         CodeItem prevItem = null;
         for (Declaration declaration : declarations) {
-            if (declaration instanceof FunDecl) {
-                // Create a Function variable
+            int declType;
+            if (declaration.getType() == TokenType.VOID) {
+                declType = TYPE_VOID;
             }
             else {
-                int type;
-                if (declaration.getType() == TokenType.VOID) {
-                    type = TYPE_VOID;
-                }
-                else {
-                    type = TYPE_INT;
-                }
+                declType = TYPE_INT;
+            }
 
-                if (!declaration.isArray()) {
-                    currItem = new Data(type, declaration.getID());
+            if (declaration instanceof FunDecl) {
+                if (((FunDecl) declaration).getParams().isEmpty()) {
+                    currItem = new Function(declType, declaration.getID());
                 }
                 else {
-                    currItem = new Data(type, declaration.getID(), true, declaration.getNum());
+                    FuncParam firstParam = getFuncParams((FunDecl) declaration);
+                    currItem = new Function(declType, declaration.getID(), firstParam);
+                }
+            }
+            else {
+                if (declaration.isArray()) {
+                    currItem = new Data(declType, declaration.getID(), true, declaration.getNum());
+                }
+                else {
+                    currItem = new Data(declType, declaration.getID());
                 }
             }
 
@@ -50,6 +56,30 @@ public class Program {
             prevItem = currItem;
         }
         return firstItem;
+    }
+
+    private FuncParam getFuncParams(FunDecl declaration) {
+        FuncParam firstParam = null;
+        FuncParam currParam;
+        FuncParam prevParam = null;
+        for (Param param : declaration.getParams().getList()) {
+            if (param.isArray()) {
+                currParam = new FuncParam(TYPE_INT, param.getID(), true);
+            }
+            else {
+                currParam = new FuncParam(TYPE_INT, param.getID());
+            }
+
+            if (firstParam == null) {
+                firstParam = currParam;
+            }
+
+            if (prevParam != null) {
+                prevParam.setNextParam(currParam);
+            }
+            prevParam = currParam;
+        }
+        return firstParam;
     }
 
     public void add(Declaration decl) {

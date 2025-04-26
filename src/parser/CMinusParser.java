@@ -145,6 +145,7 @@ public class CMinusParser implements Parser {
         if (currentToken.getType() == TokenType.LBRACK) {
             matchToken(TokenType.LBRACK);
             matchToken(TokenType.RBRACK);
+            return new Param(TokenType.INT, id.getTokenData(), true);
         }
         return new Param(TokenType.INT, id.getTokenData());
     }

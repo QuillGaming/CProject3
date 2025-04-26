@@ -9,6 +9,10 @@ public class ParamList {
         params = new ArrayList<>();
     }
 
+    public ArrayList<Param> getList() {
+        return params;
+    }
+
     public void add(Param param) {
         params.add(param);
     }
@@ -31,5 +35,9 @@ public class ParamList {
 
     public int size() {
         return params.size();
+    }
+
+    public boolean isEmpty() {
+        return params.isEmpty();
     }
 }

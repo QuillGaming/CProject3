@@ -30,33 +30,10 @@ public class Program {
             }
 
             if (declaration instanceof FunDecl) {
-                if (((FunDecl) declaration).getParams().isEmpty()) {
-                    currItem = new Function(declType, declaration.getID());
-                }
-                else {
-                    FuncParam firstParam = getFuncParams(((FunDecl) declaration).getParams().getList());
-                    currItem = new Function(declType, declaration.getID(), firstParam);
-                }
-                Function currFuncItem = (Function) currItem;
-
-                HashMap symbolTable = currFuncItem.getTable();
-                for (VarDecl varDecl : ((FunDecl) declaration).getCmpndStmt().getDecls().getList()) {
-                    // Put the virtual register number and the variable name in the symbol table.
-                    // May not be fully correct, but it's a start
-                    symbolTable.put(currFuncItem.getNewRegNum(), varDecl.getID());
-                }
-
-                for (Statement stmt : ((FunDecl) declaration).getCmpndStmt().getStmts().getList()) {
-
-                }
+                currItem = ((FunDecl) declaration).genFunLLCode(declType);
             }
-            else {
-                if (declaration.isArray()) {
-                    currItem = new Data(declType, declaration.getID(), true, declaration.getNum());
-                }
-                else {
-                    currItem = new Data(declType, declaration.getID());
-                }
+            else { // declaration instanceof Declaration
+                currItem = declaration.genLLCode(declType);
             }
 
             if (firstItem == null) {
@@ -69,30 +46,6 @@ public class Program {
             prevItem = currItem;
         }
         return firstItem;
-    }
-
-    private FuncParam getFuncParams(ArrayList<Param> params) {
-        FuncParam firstParam = null;
-        FuncParam currParam;
-        FuncParam prevParam = null;
-        for (Param param : params) {
-            if (param.isArray()) {
-                currParam = new FuncParam(TYPE_INT, param.getID(), true);
-            }
-            else {
-                currParam = new FuncParam(TYPE_INT, param.getID());
-            }
-
-            if (firstParam == null) {
-                firstParam = currParam;
-            }
-
-            if (prevParam != null) {
-                prevParam.setNextParam(currParam);
-            }
-            prevParam = currParam;
-        }
-        return firstParam;
     }
 
     public void add(Declaration decl) {

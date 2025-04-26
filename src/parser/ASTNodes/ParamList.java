@@ -1,6 +1,10 @@
 package parser.ASTNodes;
 
+import lowlevel.FuncParam;
+
 import java.util.ArrayList;
+
+import static lowlevel.Data.TYPE_INT;
 
 public class ParamList {
     private final ArrayList<Param> params;
@@ -39,5 +43,29 @@ public class ParamList {
 
     public boolean isEmpty() {
         return params.isEmpty();
+    }
+
+    public FuncParam genLLCode() {
+        FuncParam firstParam = null;
+        FuncParam currParam;
+        FuncParam prevParam = null;
+        for (Param param : params) {
+            if (param.isArray()) {
+                currParam = new FuncParam(TYPE_INT, param.getID(), true);
+            }
+            else {
+                currParam = new FuncParam(TYPE_INT, param.getID());
+            }
+
+            if (firstParam == null) {
+                firstParam = currParam;
+            }
+
+            if (prevParam != null) {
+                prevParam.setNextParam(currParam);
+            }
+            prevParam = currParam;
+        }
+        return firstParam;
     }
 }

@@ -1,10 +1,11 @@
 package parser.ASTNodes;
 
+import lowlevel.Data;
 import scanner.TokenType;
 
 public class Declaration {
     private final TokenType type;
-    private final String ID;
+    protected final String ID;
     private final boolean array;
     private final int num;
 
@@ -33,5 +34,17 @@ public class Declaration {
 
     public int getNum() {
         return num;
+    }
+
+    public Data genLLCode(int declType) {
+        Data currItem;
+        if (array) {
+            currItem = new Data(declType, ID, true, num);
+        }
+        else {
+            currItem = new Data(declType, ID);
+        }
+
+        return currItem;
     }
 }

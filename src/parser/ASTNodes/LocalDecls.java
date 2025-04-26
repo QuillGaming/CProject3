@@ -9,6 +9,10 @@ public class LocalDecls {
         varDecls = new ArrayList<>();
     }
 
+    public ArrayList<VarDecl> getList() {
+        return varDecls;
+    }
+
     public void add(VarDecl varDecl) {
         varDecls.add(varDecl);
     }

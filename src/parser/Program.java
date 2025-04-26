@@ -33,8 +33,16 @@ public class Program {
                     currItem = new Function(declType, declaration.getID());
                 }
                 else {
-                    FuncParam firstParam = getFuncParams((FunDecl) declaration);
+                    FuncParam firstParam = getFuncParams(((FunDecl) declaration).getParams().getList());
                     currItem = new Function(declType, declaration.getID(), firstParam);
+                }
+
+                for (VarDecl varDecl : ((FunDecl) declaration).getCmpndStmt().getDecls().getList()) {
+
+                }
+
+                for (Statement stmt : ((FunDecl) declaration).getCmpndStmt().getStmts().getList()) {
+
                 }
             }
             else {
@@ -58,11 +66,11 @@ public class Program {
         return firstItem;
     }
 
-    private FuncParam getFuncParams(FunDecl declaration) {
+    private FuncParam getFuncParams(ArrayList<Param> params) {
         FuncParam firstParam = null;
         FuncParam currParam;
         FuncParam prevParam = null;
-        for (Param param : declaration.getParams().getList()) {
+        for (Param param : params) {
             if (param.isArray()) {
                 currParam = new FuncParam(TYPE_INT, param.getID(), true);
             }

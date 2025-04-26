@@ -9,6 +9,10 @@ public class StmtList {
         statements = new ArrayList<>();
     }
 
+    public ArrayList<Statement> getList() {
+        return statements;
+    }
+
     public void add(Statement stmt) {
         statements.add(stmt);
     }

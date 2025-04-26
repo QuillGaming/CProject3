@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="x64codegen">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/x64codegen.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

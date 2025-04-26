@@ -29,12 +29,8 @@ public class Program {
                 declType = TYPE_INT;
             }
 
-            if (declaration instanceof FunDecl) {
-                currItem = ((FunDecl) declaration).genFunLLCode(declType);
-            }
-            else { // declaration instanceof Declaration
-                currItem = declaration.genLLCode(declType);
-            }
+            // Polymorphism will call the correct version of genLLCode
+            currItem = declaration.genLLCode(declType);
 
             if (firstItem == null) {
                 firstItem = currItem;

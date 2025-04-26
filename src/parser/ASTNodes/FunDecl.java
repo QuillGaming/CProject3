@@ -23,7 +23,8 @@ public class FunDecl extends Declaration {
         return cmpndStmt;
     }
 
-    public Function genFunLLCode(int declType) {
+    @Override
+    public CodeItem genLLCode(int declType) {
         Function currItem;
         if (params.isEmpty()) {
             currItem = new Function(declType, ID);

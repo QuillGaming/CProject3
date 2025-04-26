@@ -1,6 +1,6 @@
 package parser.ASTNodes;
 
-import lowlevel.Data;
+import lowlevel.*;
 import scanner.TokenType;
 
 public class Declaration {
@@ -36,7 +36,7 @@ public class Declaration {
         return num;
     }
 
-    public Data genLLCode(int declType) {
+    public CodeItem genLLCode(int declType) {
         Data currItem;
         if (array) {
             currItem = new Data(declType, ID, true, num);

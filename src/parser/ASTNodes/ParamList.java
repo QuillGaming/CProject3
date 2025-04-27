@@ -56,6 +56,7 @@ public class ParamList {
             else {
                 currParam = new FuncParam(TYPE_INT, param.getID());
             }
+            currParam.setNextParam(null);
 
             if (firstParam == null) {
                 firstParam = currParam;

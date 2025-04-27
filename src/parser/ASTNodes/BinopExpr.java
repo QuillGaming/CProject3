@@ -45,7 +45,8 @@ public class BinopExpr extends Expression {
             left = (Operand) lhs.genLLCode(currBlock);
         }
         else {
-            left = null;
+            Operation temp = (Operation) lhs.genLLCode(currBlock);
+            left = temp.getDestOperand(0);
         }
 
         Operand right;
@@ -53,7 +54,8 @@ public class BinopExpr extends Expression {
             right = (Operand) rhs.genLLCode(currBlock);
         }
         else {
-            right = null;
+            Operation temp = (Operation) rhs.genLLCode(currBlock);
+            right = temp.getDestOperand(0);
         }
 
         if (type == OperationType.ASSIGN) {

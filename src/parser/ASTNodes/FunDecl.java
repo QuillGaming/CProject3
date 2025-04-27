@@ -36,7 +36,7 @@ public class FunDecl extends Declaration {
     }
 
     @Override
-    public CodeItem genLLCode(int declType) {
+    public Function genLLCode(int declType) {
         Function currItem;
         if (params.isEmpty()) {
             currItem = new Function(declType, ID);

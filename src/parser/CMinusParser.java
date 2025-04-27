@@ -159,10 +159,10 @@ public class CMinusParser implements Parser {
                 matchToken(TokenType.RPAREN);
                 return parseSimpleExpr(lhs);
             case NUM:
-                lhs = new NumExpr(matchToken(TokenType.NUM).getTokenData());
+                lhs = new NumExpr(Integer.parseInt(matchToken(TokenType.NUM).getTokenData()));
                 return parseSimpleExpr(lhs);
             case ID:
-                Object id = matchToken(TokenType.ID).getTokenData();
+                String id = matchToken(TokenType.ID).getTokenData();
                 return parsePrimeExpr(id);
             default:
                 return null; // should never get here
@@ -193,7 +193,7 @@ public class CMinusParser implements Parser {
         return lhs;
     }
 
-    private Expression parsePrimeExpr(Object id) {
+    private Expression parsePrimeExpr(String id) {
         Expression lhs;
         switch(currentToken.getType()) {
             case ASSIGN:
@@ -268,7 +268,7 @@ public class CMinusParser implements Parser {
             case ID:
                 return parseVarcall();
             case NUM:
-                return new NumExpr(advanceToken().getTokenData());
+                return new NumExpr(Integer.parseInt(advanceToken().getTokenData()));
             default:
                 //logParseError();
                 return null;
@@ -276,7 +276,7 @@ public class CMinusParser implements Parser {
     }
 
     private Expression parseVarcall() {
-        Object idName = matchToken(TokenType.ID).getTokenData();
+        String idName = matchToken(TokenType.ID).getTokenData();
         if (currentToken.getType() == TokenType.LBRACK) {
             advanceToken();
             Expression id = new IdentExpr(idName, parseExpression());

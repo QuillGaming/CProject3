@@ -1,8 +1,22 @@
 package parser.ASTNodes;
 
-public class NumExpr extends Expression {
+import lowlevel.BasicBlock;
+import lowlevel.Operand;
 
-    public NumExpr(Object num) {
-        super(num, "number");
+public class NumExpr extends Expression {
+    int num;
+
+    public NumExpr(int n) {
+        num = n;
+    }
+
+    @Override
+    public void printAST() {
+
+    }
+
+    @Override
+    public Operand genLLCode(BasicBlock currBlock) {
+        return new Operand(Operand.OperandType.INTEGER, num);
     }
 }

@@ -1,23 +1,9 @@
 package parser.ASTNodes;
 
-import lowlevel.Function;
+import lowlevel.BasicBlock;
 
-public class Expression {
-    Object lhs;
-    Expression rhs;
-    String type;
+public abstract class Expression {
+    public abstract void printAST();
 
-    public Expression(Object l, String t) {
-        this(l, null, t);
-    }
-
-    public Expression(Object l, Expression r, String t) {
-        lhs = l;
-        rhs = r;
-        type = t;
-    }
-
-    public void genLLCode(Function currItem) {
-
-    }
+    public abstract Object genLLCode(BasicBlock currBlock);
 }

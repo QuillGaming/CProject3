@@ -1,6 +1,9 @@
 package parser.ASTNodes;
 
+import lowlevel.Function;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class LocalDecls {
     private final ArrayList<VarDecl> varDecls;
@@ -40,6 +43,12 @@ public class LocalDecls {
     public void printAST() {
         for (VarDecl varDecl : varDecls) {
             varDecl.printAST();
+        }
+    }
+
+    public void genLLCode(Function currItem) {
+        for (VarDecl varDecl : varDecls) {
+            varDecl.genLLCode(currItem);
         }
     }
 }

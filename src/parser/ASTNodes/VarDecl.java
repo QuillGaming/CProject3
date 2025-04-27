@@ -1,6 +1,9 @@
 package parser.ASTNodes;
 
+import lowlevel.Function;
 import scanner.TokenType;
+
+import java.util.HashMap;
 
 public class VarDecl {
     private final TokenType type;
@@ -44,5 +47,11 @@ public class VarDecl {
         else {
             System.out.println();
         }
+    }
+
+    public void genLLCode(Function currItem) {
+        // Put the virtual register number and the variable name in the symbol table.
+        // It may not be fully correct, but it's a start
+        currItem.getTable().put(currItem.getNewRegNum(), ID);
     }
 }

@@ -36,15 +36,7 @@ public class CmpndStmt extends Statement {
 
     @Override
     public void genLLCode(Function currItem) {
-        HashMap symbolTable = currItem.getTable();
-        for (VarDecl varDecl : decls.getList()) {
-            // Put the virtual register number and the variable name in the symbol table.
-            // It may not be fully correct, but it's a start
-            symbolTable.put(currItem.getNewRegNum(), varDecl.getID());
-        }
-
-        for (Statement stmt : stmts.getList()) {
-            stmt.genLLCode(currItem);
-        }
+        decls.genLLCode(currItem);
+        stmts.genLLCode(currItem);
     }
 }

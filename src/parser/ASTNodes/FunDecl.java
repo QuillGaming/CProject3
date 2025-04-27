@@ -24,6 +24,18 @@ public class FunDecl extends Declaration {
     }
 
     @Override
+    public void printAST() {
+        System.out.print(" Function: " + ID);
+        System.out.println(" returns " + type.toString());
+
+        System.out.println("  Parameters ");
+        params.printAST();
+
+        System.out.println("  Body (Compound Statement) ");
+        cmpndStmt.printAST();
+    }
+
+    @Override
     public CodeItem genLLCode(int declType) {
         Function currItem;
         if (params.isEmpty()) {

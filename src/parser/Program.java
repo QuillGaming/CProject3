@@ -16,6 +16,14 @@ public class Program {
         declarations = new ArrayList<>();
     }
 
+    // TODO: print Expressions
+    public void printAST() {
+        System.out.println("Program");
+        for (Declaration decl : declarations) {
+            decl.printAST();
+        }
+    }
+
     public CodeItem genLLCode() {
         CodeItem firstItem = null;
         CodeItem currItem;

@@ -34,4 +34,15 @@ public class VarDecl {
     public Object getNum() {
         return num;
     }
+
+    public void printAST() {
+        System.out.print("    " + ID.toString() + " of type ");
+        System.out.print(type.toString());
+        if (array) {
+            System.out.println(" array of size " + num);
+        }
+        else {
+            System.out.println();
+        }
+    }
 }

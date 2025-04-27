@@ -12,6 +12,12 @@ public class ExprStmt extends Statement {
     }
 
     @Override
+    public void printAST() {
+        System.out.println("    Expression");
+
+    }
+
+    @Override
     public void genLLCode(Function currItem) {
         expr.genLLCode(currItem);
     }

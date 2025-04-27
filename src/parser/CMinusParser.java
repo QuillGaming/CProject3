@@ -14,67 +14,7 @@ public class CMinusParser implements Parser {
 
     // This function is only partially complete; it does not print the contents of expressions
     public void printAST(Program parseTree) {
-        System.out.println("Program");
-        for (int i = 0; i < parseTree.size(); i++) {
-            Declaration decl = parseTree.get(i);
-            if (decl instanceof FunDecl) {
-                System.out.print(" Function: " + decl.getID().toString());
-                System.out.println(" returns " + decl.getType().toString());
-
-                ParamList params = ((FunDecl) decl).getParams();
-                System.out.println("  Parameters ");
-                for (int j = 0; j < params.size(); j++) {
-                    Param param = params.get(j);
-                    System.out.print("   " + param.getID().toString() + " of type ");
-                    System.out.println(param.getType().toString());
-                }
-
-                CmpndStmt cmpndStmt = ((FunDecl) decl).getCmpndStmt();
-                System.out.println("  Body (Compound Statement) ");
-
-                LocalDecls localDecls = cmpndStmt.getDecls();
-                if (localDecls.size() > 0) {
-                    System.out.println("   Local Declarations");
-                }
-                for (int j = 0; j < localDecls.size(); j++) {
-                    VarDecl localDecl = localDecls.get(j);
-                    System.out.print("    " + localDecl.getID().toString() + " of type ");
-                    System.out.print(localDecl.getType().toString());
-                    if (localDecl.getNum() != null) {
-                        System.out.println(" array of size " + localDecl.getNum().toString());
-                    }
-                    else {
-                        System.out.println();
-                    }
-                }
-
-                StmtList stmts = cmpndStmt.getStmts();
-                if (stmts.size() > 0) {
-                    System.out.println("   Statements");
-                }
-                for (int j = 0; j < stmts.size(); j++) {
-                    Statement stmt = stmts.get(j);
-                    if (stmt instanceof IfStmt) {
-                        System.out.println("    If Statement");
-                        System.out.println("     Condition (Expression)");
-                        //
-                    }
-                    else if (stmt instanceof WhileStmt) {
-                        System.out.println("    While Statement");
-                        System.out.println("     Condition (Expression)");
-                        //
-                    }
-                    else if (stmt instanceof ReturnStmt) {
-                        System.out.println("    Return Statement");
-                        System.out.println("     Expression");
-                        //
-                    }
-                    else {
-                        System.out.println("    Expression");
-                    }
-                }
-            }
-        }
+        parseTree.printAST();
     }
 
     public Program parse() {

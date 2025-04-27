@@ -22,6 +22,18 @@ public class CmpndStmt extends Statement {
         return stmts;
     }
 
+    public void printAST() {
+        if (decls.size() > 0) {
+            System.out.println("   Local Declarations");
+            decls.printAST();
+        }
+
+        if (stmts.size() > 0) {
+            System.out.println("   Statements");
+            stmts.printAST();
+        }
+    }
+
     @Override
     public void genLLCode(Function currItem) {
         HashMap symbolTable = currItem.getTable();

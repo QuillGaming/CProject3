@@ -3,37 +3,43 @@ package parser.ASTNodes;
 import java.util.ArrayList;
 
 public class StmtList {
-    private final ArrayList<Statement> statements;
+    private final ArrayList<Statement> stmts;
 
     public StmtList() {
-        statements = new ArrayList<>();
+        stmts = new ArrayList<>();
     }
 
     public ArrayList<Statement> getList() {
-        return statements;
+        return stmts;
     }
 
     public void add(Statement stmt) {
-        statements.add(stmt);
+        stmts.add(stmt);
     }
 
     public Statement get(int index) {
-        return statements.get(index);
+        return stmts.get(index);
     }
 
     public void set(int index, Statement stmt) {
-        statements.set(index, stmt);
+        stmts.set(index, stmt);
     }
 
     public void remove(int index) {
-        statements.remove(index);
+        stmts.remove(index);
     }
 
     public void clear() {
-        statements.clear();
+        stmts.clear();
     }
 
     public int size() {
-        return statements.size();
+        return stmts.size();
+    }
+
+    public void printAST() {
+        for (Statement stmt : stmts) {
+            stmt.printAST();
+        }
     }
 }

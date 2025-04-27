@@ -45,18 +45,18 @@ public class ParamList {
         return params.isEmpty();
     }
 
+    public void printAST() {
+        for (Param param : params) {
+            param.printAST();
+        }
+    }
+
     public FuncParam genLLCode() {
         FuncParam firstParam = null;
         FuncParam currParam;
         FuncParam prevParam = null;
         for (Param param : params) {
-            if (param.isArray()) {
-                currParam = new FuncParam(TYPE_INT, param.getID(), true);
-            }
-            else {
-                currParam = new FuncParam(TYPE_INT, param.getID());
-            }
-            currParam.setNextParam(null);
+            currParam = param.genLLCode();
 
             if (firstParam == null) {
                 firstParam = currParam;

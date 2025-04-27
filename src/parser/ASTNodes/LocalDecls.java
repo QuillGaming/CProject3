@@ -36,4 +36,10 @@ public class LocalDecls {
     public int size() {
         return varDecls.size();
     }
+
+    public void printAST() {
+        for (VarDecl varDecl : varDecls) {
+            varDecl.printAST();
+        }
+    }
 }

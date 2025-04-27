@@ -4,7 +4,7 @@ import lowlevel.*;
 import scanner.TokenType;
 
 public class Declaration {
-    private final TokenType type;
+    protected final TokenType type;
     protected final String ID;
     private final boolean array;
     private final int num;
@@ -34,6 +34,11 @@ public class Declaration {
 
     public int getNum() {
         return num;
+    }
+
+    public void printAST() {
+        System.out.print(" Global Variable:");
+        System.out.println(type.toString() + " " + ID);
     }
 
     public CodeItem genLLCode(int declType) {

@@ -12,6 +12,20 @@ public class IfStmt extends Statement {
         elseStmt = stmt2;
     }
 
+    public void printAST() {
+        System.out.println("    If Statement");
+        System.out.println("     Condition (Expression)");
+
+
+        System.out.println("     Then Branch (Statement)");
+        thenStmt.printAST();
+
+        if (elseStmt != null) {
+            System.out.println("     Else Branch (Statement)");
+            elseStmt.printAST();
+        }
+    }
+
     @Override
     public void genLLCode(Function currItem) {
 

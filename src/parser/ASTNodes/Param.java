@@ -1,6 +1,9 @@
 package parser.ASTNodes;
 
+import lowlevel.FuncParam;
 import scanner.TokenType;
+
+import static lowlevel.Data.TYPE_INT;
 
 public class Param {
     private final TokenType type;
@@ -27,5 +30,23 @@ public class Param {
 
     public boolean isArray() {
         return array;
+    }
+
+    public void printAST() {
+        System.out.print("   " + ID + " of type ");
+        System.out.println(type.toString());
+    }
+
+    public FuncParam genLLCode() {
+        FuncParam currParam;
+        if (array) {
+            currParam = new FuncParam(TYPE_INT, ID, true);
+        }
+        else {
+            currParam = new FuncParam(TYPE_INT, ID);
+        }
+        currParam.setNextParam(null);
+
+        return currParam;
     }
 }

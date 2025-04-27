@@ -9,5 +9,7 @@ public abstract class Statement {
         expr = e;
     }
 
+    public abstract void printAST();
+
     public abstract void genLLCode(Function currItem);
 }

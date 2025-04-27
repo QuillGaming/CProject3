@@ -8,6 +8,13 @@ public class ReturnStmt extends Statement {
     }
 
     @Override
+    public void printAST() {
+        System.out.println("    Return Statement");
+        System.out.println("     Expression");
+
+    }
+
+    @Override
     public void genLLCode(Function currItem) {
 
     }

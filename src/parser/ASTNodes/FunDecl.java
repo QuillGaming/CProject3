@@ -35,10 +35,12 @@ public class FunDecl extends Declaration {
 
             HashMap symbolTable = currItem.getTable();
             FuncParam currParam = firstParam;
-            while (currParam.getNextParam() != null) {
+            while (currParam != null) {
                 // Put the virtual register number and the variable name in the symbol table.
                 // It may not be fully correct, but it's a start
                 symbolTable.put(currItem.getNewRegNum(), currParam.getName());
+
+                currParam = currParam.getNextParam();
             }
         }
         cmpndStmt.genLLCode(currItem);

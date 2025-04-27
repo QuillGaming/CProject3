@@ -198,7 +198,7 @@ public class CMinusParser implements Parser {
     private Statement parseStmt() {
         return switch (currentToken.getType()) {
             case LPAREN, NUM, ID -> {
-                Statement returnStmt = new Statement(parseExpression());
+                Statement returnStmt = new ExprStmt(parseExpression());
                 matchToken(TokenType.SEMI);
                 yield returnStmt;
             }

@@ -1,5 +1,7 @@
 package parser.ASTNodes;
 
+import lowlevel.Function;
+
 public class IfStmt extends Statement {
     Statement thenStmt;
     Statement elseStmt;
@@ -8,5 +10,10 @@ public class IfStmt extends Statement {
         super(express);
         thenStmt = stmt1;
         elseStmt = stmt2;
+    }
+
+    @Override
+    public Object genLLCode(Function currItem) {
+        return null;
     }
 }

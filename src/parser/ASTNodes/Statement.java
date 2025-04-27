@@ -1,13 +1,13 @@
 package parser.ASTNodes;
 
-public class Statement {
-    private final Expression expr;
+import lowlevel.Function;
+
+public abstract class Statement {
+    Expression expr;
 
     public Statement(Expression e) {
         expr = e;
     }
 
-    public Expression getExpr() {
-        return expr;
-    }
+    public abstract Object genLLCode(Function currItem);
 }

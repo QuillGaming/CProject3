@@ -2,12 +2,13 @@ package parser.ASTNodes;
 
 import lowlevel.Function;
 
-public class WhileStmt extends Statement {
-    Statement stmt;
-
-    public WhileStmt(Expression e, Statement s) {
+public class ExprStmt extends Statement {
+    public ExprStmt(Expression e) {
         super(e);
-        stmt = s;
+    }
+
+    public Expression getExpr() {
+        return expr;
     }
 
     @Override

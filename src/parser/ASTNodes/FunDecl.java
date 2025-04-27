@@ -34,16 +34,7 @@ public class FunDecl extends Declaration {
             currItem = new Function(declType, ID, firstParam);
         }
 
-        HashMap symbolTable = currItem.getTable();
-        for (VarDecl varDecl : cmpndStmt.getDecls().getList()) {
-            // Put the virtual register number and the variable name in the symbol table.
-            // May not be fully correct, but it's a start
-            symbolTable.put(currItem.getNewRegNum(), varDecl.getID());
-        }
-
-        for (Statement stmt : cmpndStmt.getStmts().getList()) {
-
-        }
+        cmpndStmt.genLLCode(currItem);
 
         return currItem;
     }

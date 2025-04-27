@@ -9,5 +9,5 @@ public abstract class Statement {
         expr = e;
     }
 
-    public abstract Object genLLCode(Function currItem);
+    public abstract void genLLCode(Function currItem);
 }

@@ -33,7 +33,6 @@ public class FunDecl extends Declaration {
             FuncParam firstParam = params.genLLCode();
             currItem = new Function(declType, ID, firstParam);
         }
-
         cmpndStmt.genLLCode(currItem);
 
         return currItem;

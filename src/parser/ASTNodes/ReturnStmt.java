@@ -8,7 +8,7 @@ public class ReturnStmt extends Statement {
     }
 
     @Override
-    public Object genLLCode(Function currItem) {
-        return null;
+    public void genLLCode(Function currItem) {
+
     }
 }

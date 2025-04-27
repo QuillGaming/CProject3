@@ -1,5 +1,7 @@
 package parser.ASTNodes;
 
+import lowlevel.Function;
+
 public class Expression {
     Object lhs;
     Expression rhs;
@@ -13,5 +15,9 @@ public class Expression {
         lhs = l;
         rhs = r;
         type = t;
+    }
+
+    public void genLLCode(Function currItem) {
+
     }
 }

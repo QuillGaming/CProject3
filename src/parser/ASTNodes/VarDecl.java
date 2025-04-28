@@ -52,6 +52,6 @@ public class VarDecl {
     public void genLLCode(Function currItem) {
         // Put the virtual register number and the variable name in the symbol table.
         // It may not be fully correct, but it's a start
-        currItem.getTable().put(currItem.getNewRegNum(), ID);
+        currItem.getTable().put(ID, currItem.getNewRegNum());
     }
 }

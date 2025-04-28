@@ -21,9 +21,9 @@ public class IdentExpr extends Expression {
         HashMap symbolTable = currBlock.getFunc().getTable();
         int regNum = -1;
         for (Object obj : symbolTable.keySet()) {
-            int key = (int) obj;
-            if (symbolTable.get(key) == ID) {
-                regNum = key;
+            String key = (String) obj;
+            if (key == ID) {
+                regNum = (int) symbolTable.get(key);
                 break;
             }
         }

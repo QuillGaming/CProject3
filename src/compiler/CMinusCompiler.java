@@ -45,7 +45,7 @@ public class CMinusCompiler implements Compiler {
             int optiLevel = 2;
             LowLevelCodeOptimizer lowLevelOpti =
                     new LowLevelCodeOptimizer(lowLevelCode, optiLevel);
-            lowLevelOpti.optimize();
+            //lowLevelOpti.optimize();
 
             fileName = filePrefix + ".opti";
             outFile =

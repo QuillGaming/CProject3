@@ -50,7 +50,7 @@ public class FunDecl extends Declaration {
             while (currParam != null) {
                 // Put the virtual register number and the variable name in the symbol table.
                 // It may not be fully correct, but it's a start
-                symbolTable.put(currItem.getNewRegNum(), currParam.getName());
+                symbolTable.put(currParam.getName(), currItem.getNewRegNum());
 
                 currParam = currParam.getNextParam();
             }

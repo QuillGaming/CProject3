@@ -21,44 +21,41 @@ public class WhileStmt extends Statement {
     }
 
     @Override
-    public void genLLCode(Function currItem, CodeItem firstItem) {
-        BasicBlock savedBlock = currItem.getCurrBlock();
-        
-        BasicBlock loopCondBlock = new BasicBlock(currItem);
-        savedBlock.appendOper(new Operation(Operation.OperationType.JMP, savedBlock));
-        Operand target = new Operand(Operand.OperandType.BLOCK, loopCondBlock.getBlockNum());
-        savedBlock.getLastOper().setSrcOperand(0, target);
-        
-        BasicBlock loopBodyBlock = new BasicBlock(currItem);
-        BasicBlock postLoopBlock = new BasicBlock(currItem);
-        
-        currItem.setCurrBlock(loopCondBlock);
-        
-        expr.genLLCode(currItem.getCurrBlock(), firstItem, false, 0);
+    public void genLLCode(Function currFunc, CodeItem firstItem) {
+        BasicBlock bodyBlock = new BasicBlock(currFunc);
+        BasicBlock postBlock = new BasicBlock(currFunc);
 
-        // Get register number
-        int conditionRegNum = (Integer) currItem.getCurrBlock().getLastOper().getDestOperand(0).getValue();
+        expr.genLLCode(currFunc.getCurrBlock(), firstItem, false, 0);
 
-        Operation branchOp = new Operation(Operation.OperationType.BNE, loopCondBlock);
-        Operand conditionResult = new Operand(Operand.OperandType.REGISTER, conditionRegNum);
-        branchOp.setSrcOperand(0, conditionResult);
-        
-        Operand trueTarget = new Operand(Operand.OperandType.BLOCK, loopBodyBlock.getBlockNum());
-        branchOp.setSrcOperand(1, trueTarget);
-        
-        Operand falseTarget = new Operand(Operand.OperandType.BLOCK, postLoopBlock.getBlockNum());
-        branchOp.setSrcOperand(2, falseTarget);
-        
-        loopCondBlock.appendOper(branchOp);
-        
-        currItem.setCurrBlock(loopBodyBlock);
-        stmt.genLLCode(currItem, firstItem);
-        
-        Operation jumpOp = new Operation(Operation.OperationType.JMP, loopBodyBlock);
-        target = new Operand(Operand.OperandType.BLOCK, loopCondBlock.getBlockNum());
+        int conditionRegNum = (Integer) currFunc.getCurrBlock().getLastOper().getDestOperand(0).getValue();
+
+        Operation branchOp = new Operation(Operation.OperationType.BNE, currFunc.getCurrBlock());
+        branchOp.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, conditionRegNum));
+        branchOp.setSrcOperand(1, new Operand(Operand.OperandType.INTEGER, 0));
+        branchOp.setSrcOperand(2, new Operand(Operand.OperandType.BLOCK, postBlock.getBlockNum()));
+        currFunc.getCurrBlock().appendOper(branchOp);
+
+        currFunc.getLastBlock().setNextBlock(bodyBlock);
+        bodyBlock.setPrevBlock(currFunc.getLastBlock());
+        currFunc.setLastBlock(bodyBlock);
+        currFunc.setCurrBlock(bodyBlock);
+
+        stmt.genLLCode(currFunc, firstItem);
+
+        Operation jumpOp = new Operation(Operation.OperationType.JMP, bodyBlock);
+        Operand target = new Operand(Operand.OperandType.BLOCK, bodyBlock.getBlockNum());
         jumpOp.setSrcOperand(0, target);
-        loopBodyBlock.appendOper(jumpOp);
-        
-        currItem.setCurrBlock(postLoopBlock);
+        bodyBlock.appendOper(jumpOp);
+
+        /*
+        Operation jumpToPost = new Operation(Operation.OperationType.JMP, currFunc.getCurrBlock());
+        jumpToPost.setSrcOperand(0, new Operand(Operand.OperandType.BLOCK, Integer.valueOf(postBlock.getBlockNum())));
+        currFunc.getCurrBlock().appendOper(jumpToPost);
+        */
+
+        currFunc.getLastBlock().setNextBlock(postBlock);
+        postBlock.setPrevBlock(currFunc.getLastBlock());
+        currFunc.setLastBlock(postBlock);
+        currFunc.setCurrBlock(postBlock);
     }
 }

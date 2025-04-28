@@ -35,6 +35,7 @@ public class IfStmt extends Statement {
         BasicBlock elseBlock = null;
         if (elseStmt != null) {
             elseBlock = new BasicBlock(currFunc);
+            System.out.println(elseBlock.getBlockNum());
         }
 
         // 2 gencode expr
@@ -46,15 +47,13 @@ public class IfStmt extends Statement {
         // 3 create branch
         BasicBlock targetBlock = (elseStmt != null) ? elseBlock : postBlock;
         Operation branchOp = new Operation(OperationType.BEQ, currFunc.getCurrBlock());
-        branchOp.setSrcOperand(0, new Operand(OperandType.REGISTER, Integer.valueOf(conditionRegNum)));
-        branchOp.setSrcOperand(1, new Operand(OperandType.INTEGER, Integer.valueOf(0)));
-        branchOp.setSrcOperand(2, new Operand(OperandType.BLOCK, Integer.valueOf(targetBlock.getBlockNum())));
+        branchOp.setSrcOperand(0, new Operand(OperandType.REGISTER, conditionRegNum));
+        branchOp.setSrcOperand(1, new Operand(OperandType.INTEGER, 0));
+        branchOp.setSrcOperand(2, new Operand(OperandType.BLOCK, targetBlock.getBlockNum()));
         currFunc.getCurrBlock().appendOper(branchOp);
 
         // 4 append then
-        currFunc.getLastBlock().setNextBlock(thenBlock);
-        thenBlock.setPrevBlock(currFunc.getLastBlock());
-        currFunc.setLastBlock(thenBlock);
+        currFunc.appendToCurrentBlock(thenBlock);
 
         // 5 cb = then
         currFunc.setCurrBlock(thenBlock);
@@ -63,18 +62,28 @@ public class IfStmt extends Statement {
         thenStmt.genLLCode(currFunc, firstItem);
 
         // 7 append post
+        currFunc.appendToCurrentBlock(postBlock);
+        /*
         Operation jumpToPost = new Operation(OperationType.JMP, currFunc.getCurrBlock());
         jumpToPost.setSrcOperand(0, new Operand(OperandType.BLOCK, Integer.valueOf(postBlock.getBlockNum())));
         currFunc.getCurrBlock().appendOper(jumpToPost);
+        */
 
         // 8 - 11
         if (elseStmt != null) {
-            currFunc.appendUnconnectedBlock(elseBlock);
+            // 8 cb = else
             currFunc.setCurrBlock(elseBlock);
+
+            // 9 codegen else
             elseStmt.genLLCode(currFunc, firstItem);
+
+            // 10 append jmp
             Operation jumpFromElse = new Operation(OperationType.JMP, currFunc.getCurrBlock());
             jumpFromElse.setSrcOperand(0, new Operand(OperandType.BLOCK, Integer.valueOf(postBlock.getBlockNum())));
             currFunc.getCurrBlock().appendOper(jumpFromElse);
+
+            // 11 append elseblock
+            currFunc.appendUnconnectedBlock(elseBlock);
         }
 
         // 12 cb = post

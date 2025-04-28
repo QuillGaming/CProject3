@@ -33,13 +33,13 @@ public class ReturnStmt extends Statement {
             returnOp.setDestOperand(0, dest);
             Operand src = new Operand(Operand.OperandType.MACRO, "RetReg");
             returnOp.setSrcOperand(0, src);
-            currBlock.appendOper(returnOp);
+            returnBlock.setLastOper(returnOp);
         }
         
         // Add jump Operation to exit block
         Operation jumpOp = new Operation(Operation.OperationType.JMP, currBlock);
         Operand target = new Operand(Operand.OperandType.BLOCK, returnBlock.getBlockNum());
         jumpOp.setSrcOperand(0, target);
-        currBlock.appendOper(jumpOp);
+        returnBlock.appendOper(jumpOp);
     }
 }

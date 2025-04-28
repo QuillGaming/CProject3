@@ -22,40 +22,36 @@ public class WhileStmt extends Statement {
 
     @Override
     public void genLLCode(Function currFunc, CodeItem firstItem) {
+        // 1 make blocks
         BasicBlock bodyBlock = new BasicBlock(currFunc);
         BasicBlock postBlock = new BasicBlock(currFunc);
 
+        // 2 gencode expr
         expr.genLLCode(currFunc.getCurrBlock(), firstItem, false, 0);
 
+        // Get register number
         int conditionRegNum = (Integer) currFunc.getCurrBlock().getLastOper().getDestOperand(0).getValue();
 
+        // 3 create branch
         Operation branchOp = new Operation(Operation.OperationType.BNE, currFunc.getCurrBlock());
         branchOp.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, conditionRegNum));
         branchOp.setSrcOperand(1, new Operand(Operand.OperandType.INTEGER, 0));
         branchOp.setSrcOperand(2, new Operand(Operand.OperandType.BLOCK, postBlock.getBlockNum()));
         currFunc.getCurrBlock().appendOper(branchOp);
 
-        currFunc.getLastBlock().setNextBlock(bodyBlock);
-        bodyBlock.setPrevBlock(currFunc.getLastBlock());
-        currFunc.setLastBlock(bodyBlock);
+        // 4 append body
+        currFunc.appendToCurrentBlock(bodyBlock);
+
+        // 5 cb = body
         currFunc.setCurrBlock(bodyBlock);
 
+        // 6 codegen body
         stmt.genLLCode(currFunc, firstItem);
 
-        Operation jumpOp = new Operation(Operation.OperationType.JMP, bodyBlock);
-        Operand target = new Operand(Operand.OperandType.BLOCK, bodyBlock.getBlockNum());
-        jumpOp.setSrcOperand(0, target);
-        bodyBlock.appendOper(jumpOp);
+        // 7 append post
+        currFunc.appendToCurrentBlock(postBlock);
 
-        /*
-        Operation jumpToPost = new Operation(Operation.OperationType.JMP, currFunc.getCurrBlock());
-        jumpToPost.setSrcOperand(0, new Operand(Operand.OperandType.BLOCK, Integer.valueOf(postBlock.getBlockNum())));
-        currFunc.getCurrBlock().appendOper(jumpToPost);
-        */
-
-        currFunc.getLastBlock().setNextBlock(postBlock);
-        postBlock.setPrevBlock(currFunc.getLastBlock());
-        currFunc.setLastBlock(postBlock);
+        // 8 cb = post
         currFunc.setCurrBlock(postBlock);
     }
 }

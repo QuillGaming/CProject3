@@ -72,7 +72,7 @@ public class IfStmt extends Statement {
             // 9 codegen else
             elseStmt.genLLCode(currFunc, firstItem);
 
-            // 10 append jmp
+            // 10 append jmp to post
             Operation jumpFromElse = new Operation(OperationType.JMP, currFunc.getCurrBlock());
             jumpFromElse.setSrcOperand(0, new Operand(OperandType.BLOCK, Integer.valueOf(postBlock.getBlockNum())));
             currFunc.getCurrBlock().appendOper(jumpFromElse);

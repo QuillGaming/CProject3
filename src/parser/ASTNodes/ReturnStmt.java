@@ -1,6 +1,6 @@
 package parser.ASTNodes;
 
-import lowlevel.Function;
+import lowlevel.*;
 
 public class ReturnStmt extends Statement {
     public ReturnStmt(Expression e) {
@@ -15,7 +15,35 @@ public class ReturnStmt extends Statement {
     }
 
     @Override
-    public void genLLCode(Function currItem) {
+    public void genLLCode(Function currFunc) {
+        BasicBlock returnBlock = currFunc.getReturnBlock();
+        if (returnBlock == null) {
+            returnBlock = currFunc.genReturnBlock();
+        }
+        BasicBlock currBlock = currFunc.getCurrBlock();
+        
+        // If it returns an expression, call genCode on the Expr
+        if (expr != null) {
+            Object result = expr.genLLCode(currBlock);
 
+            // Add Operation to move expression result into return register
+            Operation returnOp = new Operation(Operation.OperationType.ASSIGN, currBlock);
+            Operand src;
+            if (result instanceof Integer) {
+                src = new Operand(Operand.OperandType.REGISTER, result);
+            } else {
+                src = (Operand)result;
+            }
+            returnOp.setSrcOperand(0, src);
+            Operand dest = new Operand(Operand.OperandType.MACRO, "RetReg");
+            returnOp.setDestOperand(0, dest);
+            currBlock.appendOper(returnOp);
+        }
+        
+        // Add jump Operation to exit block
+        Operation jumpOp = new Operation(Operation.OperationType.JMP, currBlock);
+        Operand target = new Operand(Operand.OperandType.BLOCK, returnBlock.getBlockNum());
+        jumpOp.setSrcOperand(0, target);
+        currBlock.appendOper(jumpOp);
     }
 }

@@ -65,7 +65,7 @@ public class IfStmt extends Statement {
         currFunc.appendToCurrentBlock(postBlock);
 
         // 8 - 11
-        if (elseStmt != null) {
+        if (elseBlock != null) {
             // 8 cb = else
             currFunc.setCurrBlock(elseBlock);
 
@@ -79,6 +79,10 @@ public class IfStmt extends Statement {
 
             // 11 append elseblock
             currFunc.appendUnconnectedBlock(elseBlock);
+            thenBlock.setNextBlock(elseBlock);
+            elseBlock.setPrevBlock(thenBlock);
+            elseBlock.setNextBlock(postBlock);
+            postBlock.setPrevBlock(elseBlock);
         }
 
         // 12 cb = post

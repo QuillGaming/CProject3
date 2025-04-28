@@ -29,10 +29,10 @@ public class ReturnStmt extends Statement {
 
             // Add Operation to move expression result into return register
             Operation returnOp = new Operation(Operation.OperationType.ASSIGN, currBlock);
-            Operand src = result.getDestOperand(0);
-            returnOp.setSrcOperand(0, src);
-            Operand dest = new Operand(Operand.OperandType.MACRO, "RetReg");
+            Operand dest = result.getDestOperand(0);
             returnOp.setDestOperand(0, dest);
+            Operand src = new Operand(Operand.OperandType.MACRO, "RetReg");
+            returnOp.setSrcOperand(0, src);
             currBlock.appendOper(returnOp);
         }
         

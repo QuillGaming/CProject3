@@ -35,13 +35,13 @@ public class Args {
         return args.size();
     }
 
-    public Operation genLLCode(BasicBlock currBlock) {
+    public Operation genLLCode(BasicBlock currBlock, CodeItem firstItem) {
         Operation firstOper = null;
         Operation currOper;
         Operation prevOper = null;
         for (Expression expr : args) {
             currOper = new Operation(Operation.OperationType.PASS, currBlock);
-            expr.genLLCode(currBlock, true, 0);
+            expr.genLLCode(currBlock, firstItem, true, 0);
             currOper.setSrcOperand(0, currBlock.getLastOper().getDestOperand(0));
             currBlock.appendOper(currOper);
 

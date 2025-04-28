@@ -21,7 +21,7 @@ public class WhileStmt extends Statement {
     }
 
     @Override
-    public void genLLCode(Function currItem) {
+    public void genLLCode(Function currItem, CodeItem firstItem) {
         BasicBlock savedBlock = currItem.getCurrBlock();
         
         BasicBlock loopCondBlock = new BasicBlock(currItem);
@@ -34,7 +34,7 @@ public class WhileStmt extends Statement {
         
         currItem.setCurrBlock(loopCondBlock);
         
-        expr.genLLCode(currItem.getCurrBlock(), false, 0);
+        expr.genLLCode(currItem.getCurrBlock(), firstItem, false, 0);
 
         // Get register number
         int conditionRegNum = (Integer) currItem.getCurrBlock().getLastOper().getDestOperand(0).getValue();
@@ -52,7 +52,7 @@ public class WhileStmt extends Statement {
         loopCondBlock.appendOper(branchOp);
         
         currItem.setCurrBlock(loopBodyBlock);
-        stmt.genLLCode(currItem);
+        stmt.genLLCode(currItem, firstItem);
         
         Operation jumpOp = new Operation(Operation.OperationType.JMP, loopBodyBlock);
         target = new Operand(Operand.OperandType.BLOCK, loopCondBlock.getBlockNum());

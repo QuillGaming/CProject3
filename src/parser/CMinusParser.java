@@ -208,7 +208,13 @@ public class CMinusParser implements Parser {
                 return parseDPrimeExpr(lhs);
             case LPAREN:
                 advanceToken();
-                Args args = parseArgs();
+                Args args;
+                if (currentToken.getType() == TokenType.RPAREN) {
+                    args = new Args();
+                }
+                else {
+                    args = parseArgs();
+                }
                 matchToken(TokenType.RPAREN);
                 lhs = new CallExpr(id, args);
                 return parseSimpleExpr(lhs);
@@ -217,7 +223,7 @@ public class CMinusParser implements Parser {
                 Token op = advanceToken();
                 return new BinopExpr(op.getType(), lhs, parseSimpleExpr(null));
             default:
-                return null; // should never get here
+                return new IdentExpr(id);
         }
     }
 
@@ -234,14 +240,12 @@ public class CMinusParser implements Parser {
             return null;
         }
         Args args = new Args();
-        if (args.size() > 0) {
-            do {
-                if (currentToken.getType() == TokenType.COMMA) {
-                    advanceToken();
-                }
-                args.add(parseExpression());
-            } while (currentToken.getType() == TokenType.COMMA);
-        }
+        do {
+            if (currentToken.getType() == TokenType.COMMA) {
+                advanceToken();
+            }
+            args.add(parseExpression());
+        } while (currentToken.getType() == TokenType.COMMA);
         return args;
     }
 

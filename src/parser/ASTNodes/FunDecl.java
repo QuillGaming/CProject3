@@ -36,7 +36,7 @@ public class FunDecl extends Declaration {
     }
 
     @Override
-    public Function genLLCode(int declType) {
+    public Function genLLCode(int declType, CodeItem firstItem) {
         Function currItem;
         if (params.isEmpty()) {
             currItem = new Function(declType, ID);
@@ -55,7 +55,10 @@ public class FunDecl extends Declaration {
                 currParam = currParam.getNextParam();
             }
         }
-        cmpndStmt.genLLCode(currItem);
+        currItem.createBlock0();
+        currItem.setCurrBlock(currItem.getFirstBlock());
+
+        cmpndStmt.genLLCode(currItem, firstItem);
 
         return currItem;
     }

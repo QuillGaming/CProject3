@@ -28,7 +28,7 @@ public class IfStmt extends Statement {
     }
 
     @Override
-    public void genLLCode(Function currFunc) {
+    public void genLLCode(Function currFunc, CodeItem firstItem) {
         // 1 make 2/3 blocks
         BasicBlock thenBlock = new BasicBlock(currFunc);
         BasicBlock postBlock = new BasicBlock(currFunc);
@@ -38,7 +38,7 @@ public class IfStmt extends Statement {
         }
 
         // 2 gencode expr
-        expr.genLLCode(currFunc.getCurrBlock(), false, 0);
+        expr.genLLCode(currFunc.getCurrBlock(), firstItem, false, 0);
 
         // Get register number
         int conditionRegNum = (Integer) currFunc.getCurrBlock().getLastOper().getDestOperand(0).getValue();
@@ -60,7 +60,7 @@ public class IfStmt extends Statement {
         currFunc.setCurrBlock(thenBlock);
 
         // 6 codegen then
-        thenStmt.genLLCode(currFunc);
+        thenStmt.genLLCode(currFunc, firstItem);
 
         // 7 append post
         Operation jumpToPost = new Operation(OperationType.JMP, currFunc.getCurrBlock());
@@ -71,7 +71,7 @@ public class IfStmt extends Statement {
         if (elseStmt != null) {
             currFunc.appendUnconnectedBlock(elseBlock);
             currFunc.setCurrBlock(elseBlock);
-            elseStmt.genLLCode(currFunc);
+            elseStmt.genLLCode(currFunc, firstItem);
             Operation jumpFromElse = new Operation(OperationType.JMP, currFunc.getCurrBlock());
             jumpFromElse.setSrcOperand(0, new Operand(OperandType.BLOCK, Integer.valueOf(postBlock.getBlockNum())));
             currFunc.getCurrBlock().appendOper(jumpFromElse);

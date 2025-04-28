@@ -1,5 +1,6 @@
 package parser.ASTNodes;
 
+import lowlevel.CodeItem;
 import lowlevel.Function;
 
 import java.util.ArrayList;
@@ -45,9 +46,9 @@ public class StmtList {
         }
     }
 
-    public void genLLCode(Function currItem) {
+    public void genLLCode(Function currItem, CodeItem firstItem) {
         for (Statement stmt : stmts) {
-            stmt.genLLCode(currItem);
+            stmt.genLLCode(currItem, firstItem);
         }
     }
 }

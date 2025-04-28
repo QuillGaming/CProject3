@@ -41,7 +41,7 @@ public class Declaration {
         System.out.println(type.toString() + " " + ID);
     }
 
-    public CodeItem genLLCode(int declType) {
+    public CodeItem genLLCode(int declType, CodeItem firstItem) {
         Data currItem;
         if (array) {
             currItem = new Data(declType, ID, true, num);

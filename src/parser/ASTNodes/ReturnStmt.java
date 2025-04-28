@@ -15,7 +15,7 @@ public class ReturnStmt extends Statement {
     }
 
     @Override
-    public void genLLCode(Function currFunc) {
+    public void genLLCode(Function currFunc, CodeItem firstItem) {
         BasicBlock returnBlock = currFunc.getReturnBlock();
         if (returnBlock == null) {
             returnBlock = currFunc.genReturnBlock();
@@ -24,7 +24,7 @@ public class ReturnStmt extends Statement {
         
         // If it returns an expression, call genCode on the Expr
         if (expr != null) {
-            expr.genLLCode(currBlock, false, 0);
+            expr.genLLCode(currBlock, firstItem, false, 0);
             Operation result = currBlock.getLastOper();
 
             // Add Operation to move expression result into return register

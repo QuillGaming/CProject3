@@ -1,5 +1,6 @@
 package parser.ASTNodes;
 
+import lowlevel.CodeItem;
 import lowlevel.Function;
 
 public class ExprStmt extends Statement {
@@ -18,7 +19,7 @@ public class ExprStmt extends Statement {
     }
 
     @Override
-    public void genLLCode(Function currItem) {
-        expr.genLLCode(currItem.getCurrBlock(), false, 0);
+    public void genLLCode(Function currItem, CodeItem firstItem) {
+        expr.genLLCode(currItem.getCurrBlock(), firstItem, false, 0);
     }
 }

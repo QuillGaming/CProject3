@@ -1,5 +1,6 @@
 package parser.ASTNodes;
 
+import lowlevel.CodeItem;
 import lowlevel.Function;
 
 public abstract class Statement {
@@ -11,5 +12,5 @@ public abstract class Statement {
 
     public abstract void printAST();
 
-    public abstract void genLLCode(Function currItem);
+    public abstract void genLLCode(Function currItem, CodeItem firstItem);
 }

@@ -1,6 +1,7 @@
 package parser.ASTNodes;
 
 import lowlevel.BasicBlock;
+import lowlevel.CodeItem;
 import lowlevel.Operation;
 
 public class CallExpr extends Expression {
@@ -18,11 +19,11 @@ public class CallExpr extends Expression {
     }
 
     @Override
-    public void genLLCode(BasicBlock currBlock, boolean isRhs, int currIdx) {
+    public void genLLCode(BasicBlock currBlock, CodeItem firstItem, boolean isRhs, int currIdx) {
         Operation callOper = new Operation(Operation.OperationType.CALL, currBlock);
         Operation nextOper = currBlock.getLastOper();
         Operation prevOper = nextOper.getPrevOper();
-        Operation firstPass = args.genLLCode(currBlock);
+        Operation firstPass = args.genLLCode(currBlock, firstItem);
 
         Operation prevPass = null;
         Operation lastPass = firstPass;

@@ -17,7 +17,7 @@ public class IdentExpr extends Expression {
 
     }
 
-    public void genLLCode(BasicBlock currBlock, boolean isRhs, int currIdx) {
+    public void genLLCode(BasicBlock currBlock, CodeItem firstItem, boolean isRhs, int currIdx) {
         HashMap symbolTable = currBlock.getFunc().getTable();
         int regNum = -1;
         for (Object obj : symbolTable.keySet()) {
@@ -32,8 +32,8 @@ public class IdentExpr extends Expression {
             regNum = currBlock.getFunc().getNewRegNum();
         }
 
-        CodeItem currItem = currBlock.getFunc().getNextItem();
-        while (currItem != currBlock.getFunc()) {
+        CodeItem currItem = firstItem;
+        while (currItem != null) {
             if (currItem instanceof Data && ((Data) currItem).getName().equals(ID)) {
                 Operation loadOper = new Operation(Operation.OperationType.LOAD_I, currBlock);
                 loadOper.setSrcOperand(0, new Operand(OperandType.STRING, ID));
@@ -43,7 +43,9 @@ public class IdentExpr extends Expression {
                 loadOper.setNextOper(nextOper);
 
                 Operation prevOper = nextOper.getPrevOper();
-                prevOper.setNextOper(loadOper);
+                if (prevOper != null) {
+                    prevOper.setNextOper(loadOper);
+                }
                 nextOper.setPrevOper(loadOper);
                 loadOper.setPrevOper(prevOper);
                 break;

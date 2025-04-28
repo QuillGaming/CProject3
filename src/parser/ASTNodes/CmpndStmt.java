@@ -1,5 +1,6 @@
 package parser.ASTNodes;
 
+import lowlevel.CodeItem;
 import lowlevel.Function;
 
 import java.util.HashMap;
@@ -35,8 +36,8 @@ public class CmpndStmt extends Statement {
     }
 
     @Override
-    public void genLLCode(Function currItem) {
+    public void genLLCode(Function currItem, CodeItem firstItem) {
         decls.genLLCode(currItem);
-        stmts.genLLCode(currItem);
+        stmts.genLLCode(currItem, firstItem);
     }
 }

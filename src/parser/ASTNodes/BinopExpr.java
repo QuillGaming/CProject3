@@ -22,7 +22,7 @@ public class BinopExpr extends Expression {
     }
 
     @Override
-    public void genLLCode(BasicBlock currBlock, boolean isRhs, int currIdx) {
+    public void genLLCode(BasicBlock currBlock, CodeItem firstItem, boolean isRhs, int currIdx) {
         OperationType type = switch (operator) {
             case ASSIGN -> OperationType.ASSIGN;
             case PLUS -> OperationType.ADD_I;
@@ -42,12 +42,12 @@ public class BinopExpr extends Expression {
         currBlock.appendOper(currOper);
 
         if (!isRhs && type == OperationType.ASSIGN) {
-            lhs.genLLCode(currBlock, false, 0);
+            lhs.genLLCode(currBlock, firstItem, false, 0);
         }
         else {
-            lhs.genLLCode(currBlock, true, 0);
+            lhs.genLLCode(currBlock, firstItem, true, 0);
             currOper.setDestOperand(0, new Operand(OperandType.REGISTER, currBlock.getFunc().getNewRegNum()));
         }
-        rhs.genLLCode(currBlock, true, 1);
+        rhs.genLLCode(currBlock, firstItem, true, 1);
     }
 }

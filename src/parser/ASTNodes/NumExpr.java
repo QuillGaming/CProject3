@@ -1,6 +1,7 @@
 package parser.ASTNodes;
 
 import lowlevel.BasicBlock;
+import lowlevel.CodeItem;
 import lowlevel.Operand;
 import lowlevel.Operation;
 
@@ -21,7 +22,7 @@ public class NumExpr extends Expression {
     }
 
     @Override
-    public void genLLCode(BasicBlock currBlock, boolean isRhs, int currIdx) {
+    public void genLLCode(BasicBlock currBlock, CodeItem firstItem, boolean isRhs, int currIdx) {
         Operation lastOper = currBlock.getLastOper();
         lastOper.setSrcOperand(currIdx, new Operand(Operand.OperandType.INTEGER, num));
     }

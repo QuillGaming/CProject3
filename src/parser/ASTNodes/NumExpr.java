@@ -23,6 +23,13 @@ public class NumExpr extends Expression {
 
     @Override
     public void genLLCode(BasicBlock currBlock, CodeItem firstItem, boolean isRhs, int currIdx) {
+        if (currIdx == -1) {
+            Operation dummyOper = new Operation(Operation.OperationType.UNKNOWN, currBlock);
+            dummyOper.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, num));
+            currBlock.appendOper(dummyOper);
+            return;
+        }
+
         Operation lastOper = currBlock.getLastOper();
         lastOper.setSrcOperand(currIdx, new Operand(Operand.OperandType.INTEGER, num));
     }

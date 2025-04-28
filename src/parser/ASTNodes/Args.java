@@ -40,13 +40,12 @@ public class Args {
         Operation currOper;
         Operation prevOper = null;
         for (Expression expr : args) {
-            expr.genLLCode(currBlock, firstItem, true, 0);
-            String nameType = currBlock.getLastOper().getDestOperand(0).getType().toString();
+            expr.genLLCode(currBlock, firstItem, true, -1);
+            currOper = currBlock.getLastOper();
+            currOper.setType(Operation.OperationType.PASS);
+            String nameType = currBlock.getLastOper().getSrcOperand(0).getType().toString();
             String type = getString(nameType);
-            currOper = new Operation(Operation.OperationType.PASS, currBlock);
             currOper.addAttribute(new Attribute("PARAM_NUM", type));
-            currOper.setSrcOperand(0, currBlock.getLastOper().getDestOperand(0));
-            currBlock.appendOper(currOper);
 
             if (firstOper == null) {
                 firstOper = currOper;

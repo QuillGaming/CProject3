@@ -53,6 +53,13 @@ public class IdentExpr extends Expression {
             currItem = currItem.getNextItem();
         }
 
+        if (currIdx == -1) {
+            Operation dummyOper = new Operation(Operation.OperationType.UNKNOWN, currBlock);
+            dummyOper.setSrcOperand(0, new Operand(OperandType.REGISTER, regNum));
+            currBlock.appendOper(dummyOper);
+            return;
+        }
+
         Operation lastOper = currBlock.getLastOper();
         Operand operand = new Operand(OperandType.REGISTER, regNum);
         if (isRhs) {

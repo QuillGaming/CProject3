@@ -41,5 +41,7 @@ public class ReturnStmt extends Statement {
         Operand target = new Operand(Operand.OperandType.BLOCK, returnBlock.getBlockNum());
         jumpOp.setSrcOperand(0, target);
         returnBlock.appendOper(jumpOp);
+        returnBlock.setPrevBlock(currBlock);
+        currBlock.setNextBlock(returnBlock);
     }
 }

@@ -19,6 +19,6 @@ public class ExprStmt extends Statement {
 
     @Override
     public void genLLCode(Function currItem) {
-        expr.genLLCode(currItem.getCurrBlock());
+        expr.genLLCode(currItem.getCurrBlock(), false, 0);
     }
 }

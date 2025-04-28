@@ -39,6 +39,7 @@ public class Program {
 
             // Polymorphism will call the correct version of genLLCode
             currItem = declaration.genLLCode(declType);
+            currItem.setNextItem(firstItem);
 
             if (firstItem == null) {
                 firstItem = currItem;

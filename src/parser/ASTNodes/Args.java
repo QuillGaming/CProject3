@@ -1,5 +1,7 @@
 package parser.ASTNodes;
 
+import lowlevel.*;
+
 import java.util.ArrayList;
 
 public class Args {
@@ -31,5 +33,30 @@ public class Args {
 
     public int size() {
         return args.size();
+    }
+
+    public Operation genLLCode(BasicBlock currBlock) {
+        Operation firstOper = null;
+        Operation currOper;
+        Operation prevOper = null;
+        for (Expression expr : args) {
+            Operation exprOper;
+            //Operand operand = new Operand(Operand.OperandType.REGISTER, arg.getName());
+
+            currOper = new Operation(Operation.OperationType.PASS, currBlock);
+            //currOper.setSrcOperand(0, operand);
+
+            if (firstOper == null) {
+                firstOper = currOper;
+            }
+
+            if (prevOper != null) {
+                prevOper.setNextOper(currOper);
+                currOper.setPrevOper(prevOper);
+            }
+            prevOper = currOper;
+        }
+
+        return firstOper;
     }
 }

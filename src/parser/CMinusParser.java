@@ -74,13 +74,13 @@ public class CMinusParser implements Parser {
             if (currentToken.getType() == TokenType.COMMA) {
                 advanceToken();
             }
+            matchToken(TokenType.INT);
             params.add(parseParam());
         } while (currentToken.getType() == TokenType.COMMA);
         return params;
     }
 
     private Param parseParam() {
-        matchToken(TokenType.INT);
         Token id = matchToken(TokenType.ID);
         if (currentToken.getType() == TokenType.LBRACK) {
             matchToken(TokenType.LBRACK);
@@ -204,13 +204,13 @@ public class CMinusParser implements Parser {
                 advanceToken();
                 Expression index = parseExpression();
                 matchToken(TokenType.RBRACK);
-                lhs = new IdentExpr(id, index);
+                lhs = new IdentExpr(id);
                 return parseDPrimeExpr(lhs);
             case LPAREN:
                 advanceToken();
                 Args args = parseArgs();
                 matchToken(TokenType.RPAREN);
-                lhs = new IdentExpr(id, args);
+                lhs = new CallExpr(id, args);
                 return parseSimpleExpr(lhs);
             case PLUS, MINUS, TIMES, OVER:
                 lhs = new IdentExpr(id);
@@ -234,12 +234,14 @@ public class CMinusParser implements Parser {
             return null;
         }
         Args args = new Args();
-        do {
-            if (currentToken.getType() == TokenType.COMMA) {
-                advanceToken();
-            }
-            args.add(parseExpression());
-        } while (currentToken.getType() == TokenType.COMMA);
+        if (args.size() > 0) {
+            do {
+                if (currentToken.getType() == TokenType.COMMA) {
+                    advanceToken();
+                }
+                args.add(parseParam());
+            } while (currentToken.getType() == TokenType.COMMA);
+        }
         return args;
     }
 
@@ -275,12 +277,13 @@ public class CMinusParser implements Parser {
         }
     }
 
+    // Fundamentally changed, not sure if it makes the parser incorrect
     private Expression parseVarcall() {
         String idName = matchToken(TokenType.ID).getTokenData();
-        if (currentToken.getType() == TokenType.LBRACK) {
+        if (currentToken.getType() == TokenType.LPAREN) {
             advanceToken();
-            Expression id = new IdentExpr(idName, parseExpression());
-            matchToken(TokenType.RBRACK);
+            Expression id = new CallExpr(idName, parseArgs());
+            matchToken(TokenType.RPAREN);
             return id;
         }
         return new IdentExpr(idName);

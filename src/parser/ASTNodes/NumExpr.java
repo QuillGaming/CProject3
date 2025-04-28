@@ -2,6 +2,7 @@ package parser.ASTNodes;
 
 import lowlevel.BasicBlock;
 import lowlevel.Operand;
+import lowlevel.Operation;
 
 public class NumExpr extends Expression {
     int num;
@@ -16,7 +17,8 @@ public class NumExpr extends Expression {
     }
 
     @Override
-    public Operand genLLCode(BasicBlock currBlock) {
-        return new Operand(Operand.OperandType.INTEGER, num);
+    public void genLLCode(BasicBlock currBlock, boolean isRhs, int currIdx) {
+        Operation lastOper = currBlock.getLastOper();
+        lastOper.setSrcOperand(currIdx, new Operand(Operand.OperandType.INTEGER, num));
     }
 }

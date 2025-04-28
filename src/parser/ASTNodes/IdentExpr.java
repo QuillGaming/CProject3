@@ -7,15 +7,9 @@ import java.util.HashMap;
 
 public class IdentExpr extends Expression {
     String ID;
-    Object arg;
 
     public IdentExpr(String i) {
-        this(i, null);
-    }
-
-    public IdentExpr(String i, Object a) {
         ID = i;
-        arg = a;
     }
 
     @Override
@@ -23,8 +17,7 @@ public class IdentExpr extends Expression {
 
     }
 
-    @Override
-    public Operand genLLCode(BasicBlock currBlock) {
+    public void genLLCode(BasicBlock currBlock, boolean isRhs, int currIdx) {
         HashMap symbolTable = currBlock.getFunc().getTable();
         int regNum = -1;
         for (Object obj : symbolTable.keySet()) {
@@ -39,6 +32,32 @@ public class IdentExpr extends Expression {
             regNum = currBlock.getFunc().getNewRegNum();
         }
 
-        return new Operand(OperandType.REGISTER, regNum);
+        CodeItem currItem = currBlock.getFunc().getNextItem();
+        while (currItem != currBlock.getFunc()) {
+            if (currItem instanceof Data && ((Data) currItem).getName().equals(ID)) {
+                Operation loadOper = new Operation(Operation.OperationType.LOAD_I, currBlock);
+                loadOper.setSrcOperand(0, new Operand(OperandType.STRING, ID));
+                loadOper.setDestOperand(0, new Operand(OperandType.REGISTER, regNum));
+
+                Operation nextOper = currBlock.getLastOper();
+                loadOper.setNextOper(nextOper);
+
+                Operation prevOper = nextOper.getPrevOper();
+                prevOper.setNextOper(loadOper);
+                nextOper.setPrevOper(loadOper);
+                loadOper.setPrevOper(prevOper);
+                break;
+            }
+            currItem = currItem.getNextItem();
+        }
+
+        Operation lastOper = currBlock.getLastOper();
+        Operand operand = new Operand(OperandType.REGISTER, regNum);
+        if (isRhs) {
+            lastOper.setSrcOperand(currIdx, operand);
+        }
+        else {
+            lastOper.setDestOperand(currIdx, operand);
+        }
     }
 }

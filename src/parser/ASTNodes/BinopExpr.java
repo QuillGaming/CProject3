@@ -22,7 +22,7 @@ public class BinopExpr extends Expression {
     }
 
     @Override
-    public Operation genLLCode(BasicBlock currBlock) {
+    public void genLLCode(BasicBlock currBlock, boolean isRhs, int currIdx) {
         OperationType type = switch (operator) {
             case ASSIGN -> OperationType.ASSIGN;
             case PLUS -> OperationType.ADD_I;
@@ -39,37 +39,15 @@ public class BinopExpr extends Expression {
         };
         Operation currOper = new Operation(type, currBlock);
         currOper.setNum(currBlock.getFunc().getNewOperNum());
-
-        Operand left;
-        if (!(lhs instanceof BinopExpr)) {
-            left = (Operand) lhs.genLLCode(currBlock);
-        }
-        else {
-            Operation temp = (Operation) lhs.genLLCode(currBlock);
-            left = temp.getDestOperand(0);
-        }
-
-        Operand right;
-        if (!(rhs instanceof BinopExpr)) {
-            right = (Operand) rhs.genLLCode(currBlock);
-        }
-        else {
-            Operation temp = (Operation) rhs.genLLCode(currBlock);
-            right = temp.getDestOperand(0);
-        }
+        currBlock.appendOper(currOper);
 
         if (type == OperationType.ASSIGN) {
-            currOper.setSrcOperand(0, right);
-            currOper.setDestOperand(0, left);
+            lhs.genLLCode(currBlock, false, 0);
         }
         else {
-            currOper.setSrcOperand(0, right);
-            currOper.setSrcOperand(1, left);
-
-            Operand dest = new Operand(OperandType.REGISTER, currBlock.getFunc().getNewRegNum());
-            currOper.setDestOperand(0, dest);
+            lhs.genLLCode(currBlock, true, 0);
+            currOper.setDestOperand(0, new Operand(OperandType.REGISTER, currBlock.getFunc().getNewRegNum()));
         }
-
-        return currOper;
+        rhs.genLLCode(currBlock, true, 1);
     }
 }

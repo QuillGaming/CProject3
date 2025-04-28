@@ -40,8 +40,11 @@ public class Args {
         Operation currOper;
         Operation prevOper = null;
         for (Expression expr : args) {
-            currOper = new Operation(Operation.OperationType.PASS, currBlock);
             expr.genLLCode(currBlock, firstItem, true, 0);
+            String nameType = currBlock.getLastOper().getDestOperand(0).getType().toString();
+            String type = getString(nameType);
+            currOper = new Operation(Operation.OperationType.PASS, currBlock);
+            currOper.addAttribute(new Attribute("PARAM_NUM", type));
             currOper.setSrcOperand(0, currBlock.getLastOper().getDestOperand(0));
             currBlock.appendOper(currOper);
 
@@ -57,5 +60,17 @@ public class Args {
         }
 
         return firstOper;
+    }
+
+    private String getString(String nameType) {
+        String type = switch (nameType) {
+            case "INTEGER" -> "1";
+            case "REGISTER" -> "2";
+            case "MACRO" -> "3";
+            case "BLOCK" -> "4";
+            case "STRING" -> "5";
+            default -> "6";
+        };
+        return type;
     }
 }

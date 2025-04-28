@@ -11,6 +11,10 @@ public class NumExpr extends Expression {
         num = n;
     }
 
+    public int getNum() {
+        return num;
+    }
+
     @Override
     public void printAST() {
 

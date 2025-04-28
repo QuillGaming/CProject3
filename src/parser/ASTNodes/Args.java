@@ -40,11 +40,10 @@ public class Args {
         Operation currOper;
         Operation prevOper = null;
         for (Expression expr : args) {
-            Operation exprOper;
-            //Operand operand = new Operand(Operand.OperandType.REGISTER, arg.getName());
-
             currOper = new Operation(Operation.OperationType.PASS, currBlock);
-            //currOper.setSrcOperand(0, operand);
+            expr.genLLCode(currBlock, true, 0);
+            currOper.setSrcOperand(0, currBlock.getLastOper().getDestOperand(0));
+            currBlock.appendOper(currOper);
 
             if (firstOper == null) {
                 firstOper = currOper;

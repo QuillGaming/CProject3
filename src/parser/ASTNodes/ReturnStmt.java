@@ -24,16 +24,12 @@ public class ReturnStmt extends Statement {
         
         // If it returns an expression, call genCode on the Expr
         if (expr != null) {
-            Object result = expr.genLLCode(currBlock);
+            expr.genLLCode(currBlock, false, 0);
+            Operation result = currBlock.getLastOper();
 
             // Add Operation to move expression result into return register
             Operation returnOp = new Operation(Operation.OperationType.ASSIGN, currBlock);
-            Operand src;
-            if (result instanceof Integer) {
-                src = new Operand(Operand.OperandType.REGISTER, result);
-            } else {
-                src = (Operand)result;
-            }
+            Operand src = result.getDestOperand(0);
             returnOp.setSrcOperand(0, src);
             Operand dest = new Operand(Operand.OperandType.MACRO, "RetReg");
             returnOp.setDestOperand(0, dest);

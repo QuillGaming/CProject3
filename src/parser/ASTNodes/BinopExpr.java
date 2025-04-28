@@ -41,7 +41,7 @@ public class BinopExpr extends Expression {
         currOper.setNum(currBlock.getFunc().getNewOperNum());
         currBlock.appendOper(currOper);
 
-        if (type == OperationType.ASSIGN) {
+        if (!isRhs && type == OperationType.ASSIGN) {
             lhs.genLLCode(currBlock, false, 0);
         }
         else {

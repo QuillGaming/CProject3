@@ -34,16 +34,10 @@ public class WhileStmt extends Statement {
         
         currItem.setCurrBlock(loopCondBlock);
         
-        Object exprResult = expr.genLLCode(currItem.getCurrBlock());
-        int conditionRegNum;
+        expr.genLLCode(currItem.getCurrBlock(), false, 0);
 
-        // Get register number from the result
-        if (exprResult instanceof Operand operand) {
-            conditionRegNum = (Integer) operand.getValue();
-        } else {
-            Operation op = (Operation) exprResult;
-            conditionRegNum = ((Integer) op.getDestOperand(0).getValue()).intValue();
-        }
+        // Get register number
+        int conditionRegNum = (Integer) currItem.getCurrBlock().getLastOper().getDestOperand(0).getValue();
 
         Operation branchOp = new Operation(Operation.OperationType.BNE, loopCondBlock);
         Operand conditionResult = new Operand(Operand.OperandType.REGISTER, conditionRegNum);

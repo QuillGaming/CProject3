@@ -38,16 +38,10 @@ public class IfStmt extends Statement {
         }
 
         // 2 gencode expr
-        Object exprResult = expr.genLLCode(currFunc.getCurrBlock());
-        int conditionRegNum;
+        expr.genLLCode(currFunc.getCurrBlock(), false, 0);
 
         // Get register number
-        if (exprResult instanceof Operand) {
-            conditionRegNum = ((Integer) ((Operand) exprResult).getValue()).intValue();
-        } else {
-            Operation op = (Operation) exprResult;
-            conditionRegNum = ((Integer) op.getDestOperand(0).getValue()).intValue();
-        }
+        int conditionRegNum = (Integer) currFunc.getCurrBlock().getLastOper().getDestOperand(0).getValue();
 
         // 3 create branch
         BasicBlock targetBlock = (elseStmt != null) ? elseBlock : postBlock;

@@ -239,7 +239,7 @@ public class CMinusParser implements Parser {
                 if (currentToken.getType() == TokenType.COMMA) {
                     advanceToken();
                 }
-                args.add(parseParam());
+                args.add(parseExpression());
             } while (currentToken.getType() == TokenType.COMMA);
         }
         return args;

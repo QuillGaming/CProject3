@@ -63,11 +63,6 @@ public class IfStmt extends Statement {
 
         // 7 append post
         currFunc.appendToCurrentBlock(postBlock);
-        /*
-        Operation jumpToPost = new Operation(OperationType.JMP, currFunc.getCurrBlock());
-        jumpToPost.setSrcOperand(0, new Operand(OperandType.BLOCK, Integer.valueOf(postBlock.getBlockNum())));
-        currFunc.getCurrBlock().appendOper(jumpToPost);
-        */
 
         // 8 - 11
         if (elseStmt != null) {
@@ -87,9 +82,6 @@ public class IfStmt extends Statement {
         }
 
         // 12 cb = post
-        currFunc.getLastBlock().setNextBlock(postBlock);
-        postBlock.setPrevBlock(currFunc.getLastBlock());
-        currFunc.setLastBlock(postBlock);
         currFunc.setCurrBlock(postBlock);
     }
 }

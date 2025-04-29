@@ -60,6 +60,8 @@ public class FunDecl extends Declaration {
 
         cmpndStmt.genLLCode(currItem, firstItem);
 
+        currItem.appendBlock(currItem.getReturnBlock());
+
         return currItem;
     }
 }

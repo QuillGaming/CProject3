@@ -27,21 +27,16 @@ public class ReturnStmt extends Statement {
             expr.genLLCode(currBlock, firstItem, 0);
             Operation result = currBlock.getLastOper();
 
-            // Add Operation to move expression result into return register
-            Operation assignOp = new Operation(Operation.OperationType.ASSIGN, returnBlock);
-            Operand src = result.getDestOperand(0);
-            assignOp.setSrcOperand(0, src);
-            Operand dest = new Operand(Operand.OperandType.MACRO, "RetReg");
-            assignOp.setDestOperand(0, dest);
-            currBlock.appendOper(assignOp);
+            Operation moveOper = new Operation(Operation.OperationType.ASSIGN, currBlock);
+            moveOper.setDestOperand(0, returnBlock.getLastOper().getSrcOperand(0));
+            moveOper.setSrcOperand(0, result.getDestOperand(0));
+            currBlock.appendOper(moveOper);
         }
         
         // Add jump Operation to exit block
         Operation jumpOp = new Operation(Operation.OperationType.JMP, currBlock);
         Operand target = new Operand(Operand.OperandType.BLOCK, returnBlock.getBlockNum());
         jumpOp.setSrcOperand(0, target);
-        returnBlock.appendOper(jumpOp);
-        returnBlock.setPrevBlock(currBlock);
-        currBlock.setNextBlock(returnBlock);
+        currBlock.appendOper(jumpOp);
     }
 }

@@ -2,6 +2,7 @@ package parser.ASTNodes;
 
 import lowlevel.*;
 import lowlevel.Operand.OperandType;
+import parser.CodeGenerationException;
 
 import java.util.HashMap;
 
@@ -17,48 +18,58 @@ public class IdentExpr extends Expression {
 
     }
 
-    public void genLLCode(BasicBlock currBlock, CodeItem firstItem, boolean isRhs, int currIdx) {
-        HashMap symbolTable = currBlock.getFunc().getTable();
+    public String getID() {
+        return ID;
+    }
+
+    public void genLLCode(BasicBlock currBlock, CodeItem firstItem, int currDestIdx) {
+        int regNum = searchTable(currBlock.getFunc().getTable(), ID);
+        boolean isGlobal = false;
+        if (regNum == -1) {
+            isGlobal = searchData(firstItem, ID, regNum);
+        }
+
+        Operation lastOper = currBlock.getLastOper();
+        Operation prevOper = lastOper.getPrevOper();
+        if (isGlobal) {
+            regNum = currBlock.getFunc().getNewRegNum();
+            Operation loadOper = new Operation(Operation.OperationType.LOAD_I, currBlock);
+            loadOper.setSrcOperand(0, new Operand(OperandType.STRING, ID));
+            loadOper.setDestOperand(0, new Operand(OperandType.REGISTER, regNum));
+
+            if (prevOper != null) {
+                prevOper.setNextOper(loadOper);
+            }
+            loadOper.setPrevOper(prevOper);
+            loadOper.setNextOper(lastOper);
+            lastOper.setPrevOper(loadOper);
+        }
+
+        lastOper.setSrcOperand(currDestIdx, new Operand(OperandType.REGISTER, regNum));
+    }
+
+    public static int searchTable(HashMap symbolTable, String ID) {
         int regNum = -1;
         for (Object obj : symbolTable.keySet()) {
             String key = (String) obj;
-            if (key == ID) {
+            if (key.equals(ID)) {
                 regNum = (int) symbolTable.get(key);
                 break;
             }
         }
+        return regNum;
+    }
 
-        if (regNum == -1) {
-            regNum = currBlock.getFunc().getNewRegNum();
-        }
-
+    public static boolean searchData(CodeItem firstItem, String ID, int regNum) {
+        boolean isGlobal = false;
         CodeItem currItem = firstItem;
         while (currItem != null) {
             if (currItem instanceof Data && ((Data) currItem).getName().equals(ID)) {
-                Operation loadOper = new Operation(Operation.OperationType.LOAD_I, currBlock);
-                loadOper.setSrcOperand(0, new Operand(OperandType.STRING, ID));
-                loadOper.setDestOperand(0, new Operand(OperandType.REGISTER, regNum));
-
-                currBlock.appendOper(loadOper);
+                isGlobal = true;
                 break;
             }
             currItem = currItem.getNextItem();
         }
-
-        if (currIdx == -1) {
-            Operation dummyOper = new Operation(Operation.OperationType.UNKNOWN, currBlock);
-            dummyOper.setSrcOperand(0, new Operand(OperandType.REGISTER, regNum));
-            currBlock.appendOper(dummyOper);
-            return;
-        }
-
-        Operation lastOper = currBlock.getLastOper();
-        Operand operand = new Operand(OperandType.REGISTER, regNum);
-        if (isRhs) {
-            lastOper.setSrcOperand(currIdx, operand);
-        }
-        else {
-            lastOper.setDestOperand(currIdx, operand);
-        }
+        return isGlobal;
     }
 }

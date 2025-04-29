@@ -17,10 +17,11 @@ public class CallExpr extends Expression {
     }
 
     @Override
-    public void genLLCode(BasicBlock currBlock, CodeItem firstItem, boolean isRhs, int currIdx) {
+    public void genLLCode(BasicBlock currBlock, CodeItem firstItem, int trash) {
         Operation callOper = new Operation(Operation.OperationType.CALL, currBlock);
+        callOper.setDestOperand(0, new Operand(Operand.OperandType.STRING, ID));
         callOper.addAttribute(new Attribute("numParams", args.size() + ""));
-        Operation firstPass = args.genLLCode(currBlock, firstItem);
+        args.genLLCode(currBlock, firstItem);
         currBlock.appendOper(callOper);
     }
 }

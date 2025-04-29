@@ -38,7 +38,7 @@ public class IfStmt extends Statement {
         }
 
         // 2 gencode expr
-        expr.genLLCode(currFunc.getCurrBlock(), firstItem, false, 0);
+        expr.genLLCode(currFunc.getCurrBlock(), firstItem, 0);
 
         // Get register number
         int conditionRegNum = (Integer) currFunc.getCurrBlock().getLastOper().getDestOperand(0).getValue();

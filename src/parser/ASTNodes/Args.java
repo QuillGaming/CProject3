@@ -1,6 +1,7 @@
 package parser.ASTNodes;
 
 import lowlevel.*;
+import parser.CodeGenerationException;
 
 import java.util.ArrayList;
 
@@ -35,30 +36,54 @@ public class Args {
         return args.size();
     }
 
-    public Operation genLLCode(BasicBlock currBlock, CodeItem firstItem) {
-        Operation firstOper = null;
-        Operation currOper;
-        Operation prevOper = null;
+    public void genLLCode(BasicBlock currBlock, CodeItem firstItem) {
         for (Expression expr : args) {
-            expr.genLLCode(currBlock, firstItem, true, -1);
-            currOper = currBlock.getLastOper();
-            currOper.setType(Operation.OperationType.PASS);
-            String nameType = currBlock.getLastOper().getSrcOperand(0).getType().toString();
-            String type = getString(nameType);
-            currOper.addAttribute(new Attribute("PARAM_NUM", type));
+            Operation passOper = new Operation(Operation.OperationType.PASS, currBlock);
+            if (expr instanceof IdentExpr) {
+                passOper.addAttribute(new Attribute("PARAM_NUM", "2"));
+                String ID = ((IdentExpr) expr).getID();
+                int regNum = IdentExpr.searchTable(currBlock.getFunc().getTable(), ID);
+                boolean isGlobal = false;
+                if (regNum == -1) {
+                    isGlobal = IdentExpr.searchData(firstItem, ID, regNum);
+                }
+                if (isGlobal) {
+                    Operation lastOper = currBlock.getLastOper();
+                    Operation prevOper = lastOper.getPrevOper();
 
-            if (firstOper == null) {
-                firstOper = currOper;
-            }
+                    regNum = currBlock.getFunc().getNewRegNum();
 
-            if (prevOper != null) {
-                prevOper.setNextOper(currOper);
-                currOper.setPrevOper(prevOper);
+                    Operation loadOper = new Operation(Operation.OperationType.LOAD_I, currBlock);
+                    loadOper.setSrcOperand(0, new Operand(Operand.OperandType.STRING, ID));
+                    loadOper.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
+
+                    if (prevOper != null) {
+                        prevOper.setNextOper(loadOper);
+                    }
+                    loadOper.setPrevOper(prevOper);
+                    loadOper.setNextOper(lastOper);
+                    lastOper.setPrevOper(loadOper);
+                }
+                passOper.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
             }
-            prevOper = currOper;
+            else if (expr instanceof NumExpr) {
+                passOper.addAttribute(new Attribute("PARAM_NUM", "1"));
+                passOper.setSrcOperand(0, new Operand(Operand.OperandType.INTEGER, ((NumExpr) expr).getNum()));
+            }
+            else if (expr instanceof BinopExpr){
+                passOper.addAttribute(new Attribute("PARAM_NUM", "2"));
+                Operation binop = new Operation(Operation.OperationType.UNKNOWN, currBlock);
+                int regNum = currBlock.getFunc().getNewRegNum();
+                binop.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
+                currBlock.appendOper(binop);
+                expr.genLLCode(currBlock, firstItem, 0);
+                passOper.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
+            }
+            else {
+                throw new CodeGenerationException("Arg: CallExpr or Unexpected Expression found");
+            }
+            currBlock.appendOper(passOper);
         }
-
-        return firstOper;
     }
 
     private String getString(String nameType) {

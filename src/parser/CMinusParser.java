@@ -198,8 +198,8 @@ public class CMinusParser implements Parser {
         switch(currentToken.getType()) {
             case ASSIGN:
                 lhs = new IdentExpr(id);
-                Token assignop = advanceToken();
-                return new BinopExpr(assignop.getType(), lhs, parseExpression());
+                advanceToken();
+                return new AssignExpr(((IdentExpr) lhs).getID(), parseExpression());
             case LBRACK:
                 advanceToken();
                 Expression index = parseExpression();
@@ -229,8 +229,8 @@ public class CMinusParser implements Parser {
 
     private Expression parseDPrimeExpr(Expression lhs) {
         if (currentToken.getType() == TokenType.ASSIGN) {
-            Token assignop = advanceToken();
-            return new BinopExpr(assignop.getType(), lhs, parseExpression());
+            advanceToken();
+            return new AssignExpr(((IdentExpr) lhs).getID(), parseExpression());
         }
         return parseSimpleExpr(lhs);
     }

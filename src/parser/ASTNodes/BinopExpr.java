@@ -7,6 +7,8 @@ import scanner.TokenType;
 
 public class BinopExpr extends Expression {
     TokenType operator;
+
+    // These Expressions are never AssignExprs
     Expression lhs;
     Expression rhs;
 
@@ -22,9 +24,8 @@ public class BinopExpr extends Expression {
     }
 
     @Override
-    public void genLLCode(BasicBlock currBlock, CodeItem firstItem, boolean isRhs, int currIdx) {
+    public void genLLCode(BasicBlock currBlock, CodeItem firstItem, int trash) {
         OperationType type = switch (operator) {
-            case ASSIGN -> OperationType.ASSIGN;
             case PLUS -> OperationType.ADD_I;
             case MINUS -> OperationType.SUB_I;
             case TIMES -> OperationType.MUL_I;
@@ -37,17 +38,9 @@ public class BinopExpr extends Expression {
             case NEQ -> OperationType.NOT_EQUAL;
             default -> OperationType.UNKNOWN;
         };
-        Operation currOper = new Operation(type, currBlock);
-        currOper.setNum(currBlock.getFunc().getNewOperNum());
-        currBlock.appendOper(currOper);
-
-        if (!isRhs && type == OperationType.ASSIGN) {
-            lhs.genLLCode(currBlock, firstItem, false, 0);
-        }
-        else {
-            lhs.genLLCode(currBlock, firstItem, true, 0);
-            currOper.setDestOperand(0, new Operand(OperandType.REGISTER, currBlock.getFunc().getNewRegNum()));
-        }
-        rhs.genLLCode(currBlock, firstItem, true, 1);
+        Operation currOper = currBlock.getLastOper();
+        currOper.setType(type);
+        lhs.genLLCode(currBlock, firstItem, 0);
+        rhs.genLLCode(currBlock, firstItem, 1);
     }
 }

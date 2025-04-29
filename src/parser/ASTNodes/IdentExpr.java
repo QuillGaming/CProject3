@@ -39,15 +39,7 @@ public class IdentExpr extends Expression {
                 loadOper.setSrcOperand(0, new Operand(OperandType.STRING, ID));
                 loadOper.setDestOperand(0, new Operand(OperandType.REGISTER, regNum));
 
-                Operation nextOper = currBlock.getLastOper();
-                loadOper.setNextOper(nextOper);
-
-                Operation prevOper = nextOper.getPrevOper();
-                if (prevOper != null) {
-                    prevOper.setNextOper(loadOper);
-                }
-                nextOper.setPrevOper(loadOper);
-                loadOper.setPrevOper(prevOper);
+                currBlock.appendOper(loadOper);
                 break;
             }
             currItem = currItem.getNextItem();

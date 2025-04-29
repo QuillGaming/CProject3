@@ -20,24 +20,7 @@ public class CallExpr extends Expression {
     public void genLLCode(BasicBlock currBlock, CodeItem firstItem, boolean isRhs, int currIdx) {
         Operation callOper = new Operation(Operation.OperationType.CALL, currBlock);
         callOper.addAttribute(new Attribute("numParams", args.size() + ""));
-        Operation nextOper = currBlock.getLastOper();
-        Operation prevOper = nextOper.getPrevOper();
         Operation firstPass = args.genLLCode(currBlock, firstItem);
-
-        Operation prevPass = null;
-        Operation lastPass = firstPass;
-        while (lastPass != null) {
-            prevPass = lastPass;
-            lastPass = lastPass.getNextOper();
-        }
-        lastPass = prevPass;
-
-        prevOper.setNextOper(firstPass);
-        firstPass.setPrevOper(prevOper);
-
-        lastPass.setNextOper(callOper);
-        callOper.setPrevOper(lastPass);
-        callOper.setNextOper(nextOper);
-        nextOper.setPrevOper(callOper);
+        currBlock.appendOper(callOper);
     }
 }

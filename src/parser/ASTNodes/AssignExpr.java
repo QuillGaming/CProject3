@@ -59,17 +59,25 @@ public class AssignExpr extends Expression {
             }
         }
         else {
+            Operation moveOper;
             if (isGlobal) {
-                Operation storeOper = new Operation(Operation.OperationType.STORE_I, currBlock);
-                storeOper.setDestOperand(0, new Operand(Operand.OperandType.STRING, dest));
-                currBlock.appendOper(storeOper);
+                moveOper = new Operation(Operation.OperationType.STORE_I, currBlock);
+                moveOper.setDestOperand(0, new Operand(Operand.OperandType.STRING, dest));
             }
             else {
-                Operation assignOper = new Operation(Operation.OperationType.ASSIGN, currBlock);
-                assignOper.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
-                currBlock.appendOper(assignOper);
+                moveOper = new Operation(Operation.OperationType.ASSIGN, currBlock);
+                moveOper.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
+            }
+
+            if (!(src instanceof CallExpr)) {
+                currBlock.appendOper(moveOper);
             }
             src.genLLCode(currBlock, firstItem, 0); // src can either be an ID or a num here
+
+            if (src instanceof CallExpr) {
+                moveOper.setSrcOperand(0, new Operand(Operand.OperandType.MACRO,"RetReg"));
+                currBlock.appendOper(moveOper);
+            }
         }
     }
 }

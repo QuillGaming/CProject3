@@ -48,21 +48,12 @@ public class Args {
                     isGlobal = IdentExpr.searchData(firstItem, ID, regNum);
                 }
                 if (isGlobal) {
-                    Operation lastOper = currBlock.getLastOper();
-                    Operation prevOper = lastOper.getPrevOper();
-
                     regNum = currBlock.getFunc().getNewRegNum();
 
                     Operation loadOper = new Operation(Operation.OperationType.LOAD_I, currBlock);
                     loadOper.setSrcOperand(0, new Operand(Operand.OperandType.STRING, ID));
                     loadOper.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
-
-                    if (prevOper != null) {
-                        prevOper.setNextOper(loadOper);
-                    }
-                    loadOper.setPrevOper(prevOper);
-                    loadOper.setNextOper(lastOper);
-                    lastOper.setPrevOper(loadOper);
+                    currBlock.appendOper(loadOper);
                 }
                 passOper.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
             }

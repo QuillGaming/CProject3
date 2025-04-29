@@ -45,14 +45,6 @@ public class ReturnStmt extends Statement {
                 currBlock.appendOper(assignOper);
                 expr.genLLCode(currBlock, firstItem, 0);
             }
-
-            expr.genLLCode(currBlock, firstItem, 0);
-            Operation result = currBlock.getLastOper();
-
-            Operation moveOper = new Operation(Operation.OperationType.ASSIGN, currBlock);
-            moveOper.setDestOperand(0, returnBlock.getLastOper().getSrcOperand(0));
-            moveOper.setSrcOperand(0, result.getDestOperand(0));
-            currBlock.appendOper(moveOper);
         }
         
         // Add jump Operation to exit block

@@ -28,12 +28,12 @@ public class ReturnStmt extends Statement {
             Operation result = currBlock.getLastOper();
 
             // Add Operation to move expression result into return register
-            Operation returnOp = new Operation(Operation.OperationType.ASSIGN, currBlock);
-            Operand dest = result.getDestOperand(0);
-            returnOp.setDestOperand(0, dest);
-            Operand src = new Operand(Operand.OperandType.MACRO, "RetReg");
-            returnOp.setSrcOperand(0, src);
-            returnBlock.setLastOper(returnOp);
+            Operation assignOp = new Operation(Operation.OperationType.ASSIGN, returnBlock);
+            Operand src = result.getDestOperand(0);
+            assignOp.setSrcOperand(0, src);
+            Operand dest = new Operand(Operand.OperandType.MACRO, "RetReg");
+            assignOp.setDestOperand(0, dest);
+            currBlock.appendOper(assignOp);
         }
         
         // Add jump Operation to exit block

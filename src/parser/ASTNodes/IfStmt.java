@@ -38,6 +38,9 @@ public class IfStmt extends Statement {
         }
 
         // 2 gencode expr
+        Operation binop = new Operation(OperationType.UNKNOWN, currFunc.getCurrBlock());
+        binop.setDestOperand(0, new Operand(OperandType.REGISTER, currFunc.getNewRegNum()));
+        currFunc.getCurrBlock().appendOper(binop);
         expr.genLLCode(currFunc.getCurrBlock(), firstItem, 0);
 
         // Get register number

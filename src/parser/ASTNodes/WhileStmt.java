@@ -27,6 +27,9 @@ public class WhileStmt extends Statement {
         BasicBlock postBlock = new BasicBlock(currFunc);
 
         // 2 gencode expr
+        Operation binop = new Operation(Operation.OperationType.UNKNOWN, currFunc.getCurrBlock());
+        binop.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, currFunc.getNewRegNum()));
+        currFunc.getCurrBlock().appendOper(binop);
         expr.genLLCode(currFunc.getCurrBlock(), firstItem, 0);
 
         // Get register number

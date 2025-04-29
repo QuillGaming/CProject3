@@ -11,6 +11,10 @@ public class CallExpr extends Expression {
         args = a;
     }
 
+    public String getID() {
+        return ID;
+    }
+
     @Override
     public void printAST() {
 
@@ -19,7 +23,7 @@ public class CallExpr extends Expression {
     @Override
     public void genLLCode(BasicBlock currBlock, CodeItem firstItem, int trash) {
         Operation callOper = new Operation(Operation.OperationType.CALL, currBlock);
-        callOper.setDestOperand(0, new Operand(Operand.OperandType.STRING, ID));
+        callOper.setSrcOperand(0, new Operand(Operand.OperandType.STRING, ID));
         callOper.addAttribute(new Attribute("numParams", args.size() + ""));
         args.genLLCode(currBlock, firstItem);
         currBlock.appendOper(callOper);

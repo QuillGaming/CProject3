@@ -24,6 +24,28 @@ public class ReturnStmt extends Statement {
         
         // If it returns an expression, call genCode on the Expr
         if (expr != null) {
+            if (expr instanceof BinopExpr) {
+                Operation binop = new Operation(Operation.OperationType.UNKNOWN, currBlock);
+                Operand binopValue = new Operand(Operand.OperandType.REGISTER, currFunc.getNewRegNum());
+                binop.setDestOperand(0, binopValue);
+                currBlock.appendOper(binop);
+                expr.genLLCode(currBlock, firstItem, 0);
+
+                Operation assignOper = new Operation(Operation.OperationType.ASSIGN, currBlock);
+                assignOper.setSrcOperand(0, binopValue);
+                assignOper.setDestOperand(0, new Operand(Operand.OperandType.MACRO,"RetReg"));
+                currBlock.appendOper(assignOper);
+            }
+            else if (expr instanceof CallExpr) {
+                expr.genLLCode(currBlock, firstItem, 0);
+            }
+            else {
+                Operation assignOper = new Operation(Operation.OperationType.ASSIGN, currBlock);
+                assignOper.setDestOperand(0, new Operand(Operand.OperandType.MACRO,"RetReg"));
+                currBlock.appendOper(assignOper);
+                expr.genLLCode(currBlock, firstItem, 0);
+            }
+
             expr.genLLCode(currBlock, firstItem, 0);
             Operation result = currBlock.getLastOper();
 

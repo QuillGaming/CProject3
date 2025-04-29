@@ -21,63 +21,56 @@ public class AssignExpr extends Expression {
 
     @Override
     public void genLLCode(BasicBlock currBlock, CodeItem firstItem, int trash) {
-        HashMap symbolTable = currBlock.getFunc().getTable();
-        int regNum = -1;
-        for (Object obj : symbolTable.keySet()) {
-            String key = (String) obj;
-            if (key.equals(dest)) {
-                regNum = (int) symbolTable.get(key);
-                break;
-            }
-        }
+        int regNum = IdentExpr.searchTable(currBlock.getFunc().getTable(), dest);
         boolean isGlobal = false;
         if (regNum == -1) {
-            CodeItem currItem = firstItem;
-            while (currItem != null) {
-                if (currItem instanceof Data && ((Data) currItem).getName().equals(dest)) {
-                    regNum = currBlock.getFunc().getNewRegNum();
-                    isGlobal = true;
-                    break;
-                }
-                currItem = currItem.getNextItem();
-            }
-
-            if (regNum == -1) {
-                throw new CodeGenerationException("Assign: Destination identifier not found");
-            }
+            isGlobal = IdentExpr.searchData(firstItem, dest, regNum);
         }
 
         if (src instanceof BinopExpr) {
             Operation binop = new Operation(Operation.OperationType.UNKNOWN, currBlock);
-            binop.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
+            Operand binopValue = new Operand(Operand.OperandType.REGISTER, regNum);
+            binop.setDestOperand(0, binopValue);
             currBlock.appendOper(binop);
             src.genLLCode(currBlock, firstItem, 0);
             if (isGlobal) {
                 Operation storeOper = new Operation(Operation.OperationType.STORE_I, currBlock);
-                storeOper.setDestOperand(0, new Operand(Operand.OperandType.STRING, dest));
+                storeOper.setSrcOperand(0, binopValue);
+                storeOper.setSrcOperand(1, new Operand(Operand.OperandType.STRING, dest));
                 currBlock.appendOper(storeOper);
             }
+        }
+        else if (src instanceof CallExpr) {
+            src.genLLCode(currBlock, firstItem, 0);
+            if (isGlobal) {
+                Operation storeOper = new Operation(Operation.OperationType.STORE_I, currBlock);
+                storeOper.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
+                storeOper.setSrcOperand(1, new Operand(Operand.OperandType.MACRO,"RetReg"));
+                currBlock.appendOper(storeOper);
+            }
+            else {
+                Operation assignOper = new Operation(Operation.OperationType.ASSIGN, currBlock);
+                assignOper.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
+                assignOper.setSrcOperand(0, new Operand(Operand.OperandType.MACRO,"RetReg"));
+                currBlock.appendOper(assignOper);
+            }
+            System.out.print("");
         }
         else {
             Operation moveOper;
             if (isGlobal) {
-                moveOper = new Operation(Operation.OperationType.STORE_I, currBlock);
-                moveOper.setDestOperand(0, new Operand(Operand.OperandType.STRING, dest));
+                Operation storeOper = new Operation(Operation.OperationType.STORE_I, currBlock);
+                storeOper.setSrcOperand(1, new Operand(Operand.OperandType.STRING, dest));
+                currBlock.appendOper(storeOper);
+                moveOper = storeOper;
             }
             else {
-                moveOper = new Operation(Operation.OperationType.ASSIGN, currBlock);
-                moveOper.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
-            }
-
-            if (!(src instanceof CallExpr)) {
-                currBlock.appendOper(moveOper);
+                Operation assignOper = new Operation(Operation.OperationType.ASSIGN, currBlock);
+                assignOper.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
+                currBlock.appendOper(assignOper);
+                moveOper = assignOper;
             }
             src.genLLCode(currBlock, firstItem, 0); // src can either be an ID or a num here
-
-            if (src instanceof CallExpr) {
-                moveOper.setSrcOperand(0, new Operand(Operand.OperandType.MACRO,"RetReg"));
-                currBlock.appendOper(moveOper);
-            }
         }
     }
 }

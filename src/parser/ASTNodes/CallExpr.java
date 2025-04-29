@@ -37,6 +37,7 @@ public class CallExpr extends Expression {
 
         lastPass.setNextOper(callOper);
         callOper.setPrevOper(lastPass);
-        nextOper.setPrevOper(lastPass);
+        callOper.setNextOper(nextOper);
+        nextOper.setPrevOper(callOper);
     }
 }

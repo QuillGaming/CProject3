@@ -35,7 +35,6 @@ public class IfStmt extends Statement {
         BasicBlock elseBlock = null;
         if (elseStmt != null) {
             elseBlock = new BasicBlock(currFunc);
-            System.out.println(elseBlock.getBlockNum());
         }
 
         // 2 gencode expr

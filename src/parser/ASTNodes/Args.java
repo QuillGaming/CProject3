@@ -37,10 +37,11 @@ public class Args {
     }
 
     public void genLLCode(BasicBlock currBlock, CodeItem firstItem) {
+        int paramNum = 0;
         for (Expression expr : args) {
             Operation passOper = new Operation(Operation.OperationType.PASS, currBlock);
             if (expr instanceof IdentExpr) {
-                passOper.addAttribute(new Attribute("PARAM_NUM", "2"));
+                passOper.addAttribute(new Attribute("PARAM_NUM", paramNum + ""));
                 String ID = ((IdentExpr) expr).getID();
                 int regNum = IdentExpr.searchTable(currBlock.getFunc().getTable(), ID);
                 boolean isGlobal = false;
@@ -58,11 +59,11 @@ public class Args {
                 passOper.setSrcOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
             }
             else if (expr instanceof NumExpr) {
-                passOper.addAttribute(new Attribute("PARAM_NUM", "1"));
+                passOper.addAttribute(new Attribute("PARAM_NUM", paramNum + ""));
                 passOper.setSrcOperand(0, new Operand(Operand.OperandType.INTEGER, ((NumExpr) expr).getNum()));
             }
             else if (expr instanceof BinopExpr){
-                passOper.addAttribute(new Attribute("PARAM_NUM", "2"));
+                passOper.addAttribute(new Attribute("PARAM_NUM", paramNum + ""));
                 Operation binop = new Operation(Operation.OperationType.UNKNOWN, currBlock);
                 int regNum = currBlock.getFunc().getNewRegNum();
                 binop.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
@@ -74,6 +75,7 @@ public class Args {
                 throw new CodeGenerationException("Arg: CallExpr or Unexpected Expression found");
             }
             currBlock.appendOper(passOper);
+            paramNum += 1;
         }
     }
 

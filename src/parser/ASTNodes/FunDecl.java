@@ -62,12 +62,6 @@ public class FunDecl extends Declaration {
 
         currItem.appendBlock(currItem.getReturnBlock());
 
-        BasicBlock currBlock = currItem.getFirstUnconnectedBlock();
-        while (currBlock != null) {
-            currItem.appendBlock(currBlock);
-            currBlock = currBlock.getNextBlock();
-        }
-
         return currItem;
     }
 }

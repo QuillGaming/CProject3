@@ -33,7 +33,8 @@ public class WhileStmt extends Statement {
         expr.genLLCode(currFunc.getCurrBlock(), firstItem, 0);
 
         // Get register number
-        int conditionRegNum = (Integer) currFunc.getCurrBlock().getLastOper().getDestOperand(0).getValue();
+        Operation conditionOper = currFunc.getCurrBlock().getLastOper();
+        int conditionRegNum = (Integer) conditionOper.getDestOperand(0).getValue();
 
         // 3 create branch
         Operation branchOp = new Operation(Operation.OperationType.BNE, currFunc.getCurrBlock());
@@ -51,10 +52,22 @@ public class WhileStmt extends Statement {
         // 6 codegen body
         stmt.genLLCode(currFunc, firstItem);
 
-        // 7 append post
+        // 7 append back branch
+        Operation backCondition = new Operation(conditionOper.getType(), currFunc.getCurrBlock());
+        backCondition.setSrcOperand(0, conditionOper.getSrcOperand(0));
+        backCondition.setSrcOperand(1, conditionOper.getSrcOperand(1));
+        backCondition.setDestOperand(0, conditionOper.getDestOperand(0));
+        currFunc.getCurrBlock().appendOper(backCondition);
+        Operation backBranch = new Operation(Operation.OperationType.BEQ, currFunc.getCurrBlock());
+        backBranch.setSrcOperand(0, branchOp.getSrcOperand(0));
+        backBranch.setSrcOperand(1, branchOp.getSrcOperand(1));
+        backBranch.setSrcOperand(2, new Operand(Operand.OperandType.BLOCK, currFunc.getCurrBlock().getBlockNum()));
+        currFunc.getCurrBlock().appendOper(backBranch);
+
+        // 8 append post
         currFunc.appendToCurrentBlock(postBlock);
 
-        // 8 cb = post
+        // 9 cb = post
         currFunc.setCurrBlock(postBlock);
     }
 }

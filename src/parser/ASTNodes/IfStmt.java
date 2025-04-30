@@ -75,12 +75,18 @@ public class IfStmt extends Statement {
             elseStmt.genLLCode(currFunc, firstItem);
 
             // 10 append jmp to post
-            Operation jumpFromElse = new Operation(OperationType.JMP, currFunc.getCurrBlock());
-            jumpFromElse.setSrcOperand(0, new Operand(OperandType.BLOCK, Integer.valueOf(postBlock.getBlockNum())));
-            currFunc.getCurrBlock().appendOper(jumpFromElse);
+            Operation jumpToPost = new Operation(OperationType.JMP, currFunc.getCurrBlock());
+            jumpToPost.setSrcOperand(0, new Operand(OperandType.BLOCK, Integer.valueOf(postBlock.getBlockNum())));
+            thenBlock.appendOper(jumpToPost);
 
             // 11 append elseblock
             currFunc.appendUnconnectedBlock(elseBlock);
+
+            thenBlock.setNextBlock(elseBlock);
+            elseBlock.setPrevBlock(thenBlock);
+            elseBlock.setNextBlock(postBlock);
+            postBlock.setPrevBlock(elseBlock);
+            //*/
         }
 
         // 12 cb = post

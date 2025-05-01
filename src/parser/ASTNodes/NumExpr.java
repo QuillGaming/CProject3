@@ -1,9 +1,6 @@
 package parser.ASTNodes;
 
-import lowlevel.BasicBlock;
-import lowlevel.CodeItem;
-import lowlevel.Operand;
-import lowlevel.Operation;
+import lowlevel.*;
 
 public class NumExpr extends Expression {
     int num;

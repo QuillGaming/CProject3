@@ -2,7 +2,6 @@ package parser.ASTNodes;
 
 import lowlevel.*;
 import lowlevel.Operation.OperationType;
-import lowlevel.Operand.OperandType;
 import scanner.TokenType;
 
 public class BinopExpr extends Expression {

@@ -1,13 +1,10 @@
 package parser.ASTNodes;
 
 import lowlevel.*;
-import parser.CodeGenerationException;
-
-import java.util.HashMap;
 
 public class AssignExpr extends Expression {
     String dest;
-    Expression src; // Will never be a CallExpr
+    Expression src;
 
     public AssignExpr(String d, Expression s) {
         dest = d;
@@ -54,21 +51,17 @@ public class AssignExpr extends Expression {
                 assignOper.setSrcOperand(0, new Operand(Operand.OperandType.MACRO,"RetReg"));
                 currBlock.appendOper(assignOper);
             }
-            System.out.print("");
         }
         else {
-            Operation moveOper;
             if (isGlobal) {
                 Operation storeOper = new Operation(Operation.OperationType.STORE_I, currBlock);
                 storeOper.setSrcOperand(1, new Operand(Operand.OperandType.STRING, dest));
                 currBlock.appendOper(storeOper);
-                moveOper = storeOper;
             }
             else {
                 Operation assignOper = new Operation(Operation.OperationType.ASSIGN, currBlock);
                 assignOper.setDestOperand(0, new Operand(Operand.OperandType.REGISTER, regNum));
                 currBlock.appendOper(assignOper);
-                moveOper = assignOper;
             }
             src.genLLCode(currBlock, firstItem, 0); // src can either be an ID or a num here
         }

@@ -3,8 +3,6 @@ package parser.ASTNodes;
 import lowlevel.CodeItem;
 import lowlevel.Function;
 
-import java.util.HashMap;
-
 public class CmpndStmt extends Statement {
     private final LocalDecls decls;
     private final StmtList stmts;

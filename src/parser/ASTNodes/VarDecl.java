@@ -3,8 +3,6 @@ package parser.ASTNodes;
 import lowlevel.Function;
 import scanner.TokenType;
 
-import java.util.HashMap;
-
 public class VarDecl {
     private final TokenType type;
     private final String ID;

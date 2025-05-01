@@ -5,7 +5,6 @@ import parser.ASTNodes.*;
 import scanner.TokenType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static lowlevel.Data.*;
 
@@ -16,7 +15,6 @@ public class Program {
         declarations = new ArrayList<>();
     }
 
-    // TODO: print Expressions
     public void printAST() {
         System.out.println("Program");
         for (Declaration decl : declarations) {

@@ -3,7 +3,6 @@ package parser.ASTNodes;
 import lowlevel.Function;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class LocalDecls {
     private final ArrayList<VarDecl> varDecls;

@@ -4,8 +4,6 @@ import lowlevel.FuncParam;
 
 import java.util.ArrayList;
 
-import static lowlevel.Data.TYPE_INT;
-
 public class ParamList {
     private final ArrayList<Param> params;
 
